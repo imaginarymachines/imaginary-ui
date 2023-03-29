@@ -82,6 +82,7 @@ export const SelectArea = ({ label, name, id,description = '', isFocused = false
     }[],
     errrorMessage?: string
 }) => {
+    const {getFieldValue,setFieldValue} = useImaginaryForm();
     const value = getFieldValue(name);
 
     return (

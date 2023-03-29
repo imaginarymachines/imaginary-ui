@@ -1,8 +1,5 @@
 import { ILayout } from "../lib/Form";
 import "./App.css";
-import {createContext, useState,useMemo,useContext, Fragment} from 'react';
-import { IField, TFields } from "../lib/Fields";
-import { collectFieldRules,validator, collectFieldValues, TValuesObj } from "../lib/utils";
 import ImaginaryForm from "../lib/ImaginaryForm";
 
 const layout : ILayout = {
@@ -121,152 +118,12 @@ const layout : ILayout = {
 ]
 }
 
-const ImaginaryFormContext = createContext<{
-  fields: TFields;
-  setFieldValue : (name: string, value: string|number|undefined) => void;
-  getFieldValue : (name: string) => string|number|undefined;
-  values: TValuesObj;
-  onNext: () => void;
-  onBack: () => void;
-  getFieldError: (name: string) => string|undefined;
-}>(
-  // @ts-ignore
-  null
-);
-
-const ImaginaryFormProvider = ({children,layout,onSave}: {
-  children: React.ReactNode,
-  layout: ILayout,
-  onSave: (values: TValuesObj) => void,
-}) => {
-
-  //steps as id: order
-  const steps = useMemo<{[key:string]: number}>(() => {
-    let s : {[key:string]: number} = {};
-     layout.groups.forEach((group) => {
-      s[group.id] = group.order;
-    });
-    return s;
-  },[layout]);
-  //current step number
-  const [currentStep,setCurrentStep] = useState<number>(1);
-  //field data
-  //Do not make this public
-  //@todo useReducer/ store
-  const [data,setData] =useState<TValuesObj>(()=> {
-    const v : TValuesObj = {};
-    layout.fields.forEach((field) => {
-      v[field.name] = field.defaultValue;
-    });
-    return v;
-  });
-
-  //error messages
-  const [errors,setErrors] = useState<{[key:string]: string}>({});
-
-  const setFieldValue = (name: string, value: string|number|undefined) => {
-    setData({
-      ...data,
-      [name]: value,
-    });
-  }
-  const getFieldValue = (name: string) => {
-    return data[name];
-  }
-
-  const fields = useMemo<TFields>(() => {
-    //fields in current step
-    const currentGroup = layout.groups.find((group) => {
-      return group.order === currentStep;
-    });
-    if (!currentGroup) {
-      return [];
-    }
-    return layout.fields.filter((field) => {
-      return currentGroup.fields.includes(field.name);
-    });
-
-  },[layout,currentStep]);
-
-  const onBack = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
-  }
-
-  const onNext = () => {
-    let rules = collectFieldRules(fields);
-    let values = collectFieldValues(fields,data);
-    let {errors,isValid} =  validator(values,rules);
-    console.log({rules,values,isValid});
-    if (!isValid) {
-      setErrors(errors);
-      return;
-    }else{
-      setErrors({});
-    }
-
-    if (currentStep < layout.groups.length) {
-      setCurrentStep(currentStep + 1);
-    }else{
-      onSave(data);
-    }
-
-  }
-
-  const getFieldError = (name: string) : string|undefined => {
-    if( errors[name]){
-      return errors[name];
-    }
-    return undefined;
-  }
 
 
-  return (
-    <ImaginaryFormContext.Provider value={{
-      onNext,
-      onBack,
-      setFieldValue,
-      getFieldValue,
-      getFieldError,
-      fields,
-      //@todo not send values
-      values:data,
-    }}>
-      {children}
-    </ImaginaryFormContext.Provider>
-  )
-}
 
-const Input = (props: IField) => {
-  const {getFieldValue,setFieldValue} = useContext(ImaginaryFormContext);
-  return (
-    <div>
-      <input name={props.name} defaultValue={getFieldValue(props.name)} onBlur={(e) => {
-        setFieldValue(props.name,e.target.value);
-      }} />
-      </div>
-  )
-}
-
-const InputArea = (props:IField) => {
-  const {getFieldError} = useContext(ImaginaryFormContext);
-  const errorMessage = getFieldError(props.name);
-  return (
-    <div key={props.id}>
-      <label htmlFor={props.id}>
-        <span>{props.label}</span>
-        {props.required ? <span>*</span> : null}
-      </label>
-      <Input {...props} />
-      {errorMessage ? <span>{errorMessage}</span> : null}
-    </div>
-  )
-};
 
 
 function App() {
-
   const onSave = (data: any) => {
     console.log(data);
   }
