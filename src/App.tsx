@@ -24,7 +24,7 @@ const layout : ILayout = {
     {
       "id": "roles",
       "label": "Roles",
-      "order": 1,
+      "order": 2,
 
       "fields": [
           "role"
@@ -124,8 +124,8 @@ const ImaginaryFormContext = createContext<{
   setFieldValue : (name: string, value: string|number|undefined) => void,
   getFieldValue : (name: string) => string|number|undefined,
   values: {[key:string]: string|number|undefined},
-  onSave: (values: {[key:string]: string|number|undefined}) => void,
-
+  onNext: () => void;
+  onBack: () => void;
 }>(
   // @ts-ignore
   null
@@ -137,6 +137,17 @@ const ImaginaryFormProvider = ({children,layout,onSave}: {
   onSave: (values: {[key:string]: string|number|undefined}) => void,
 }) => {
 
+  //steps as id: order
+  const steps = useMemo<{[key:string]: number}>(() => {
+    let s : {[key:string]: number} = {};
+     layout.groups.forEach((group) => {
+      s[group.id] = group.order;
+    });
+    return s;
+  },[layout]);
+  //current step number
+  const [currentStep,setCurrentStep] = useState<number>(1);
+  //field data
   const [data,setData] =useState<any>(()=> {
     const v : {[key:string]: string|number|undefined}= {};
     layout.fields.forEach((field) => {
@@ -155,13 +166,40 @@ const ImaginaryFormProvider = ({children,layout,onSave}: {
     return data[name];
   }
 
-  const fields = useMemo(() => {
-    return layout.fields;
+  const fields = useMemo<TFields>(() => {
+    //fields in current step
+    const currentGroup = layout.groups.find((group) => {
+      return group.order === currentStep;
+    });
+    if (!currentGroup) {
+      return [];
+    }
+    return layout.fields.filter((field) => {
+      return currentGroup.fields.includes(field.name);
+    });
 
-  },[layout]);
+  },[layout,currentStep]);
+
+  const onBack = () => {
+    console.log('back',currentStep, currentStep > 1);
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  }
+
+  const onNext = () => {
+    if (currentStep < layout.groups.length) {
+      setCurrentStep(currentStep + 1);
+    }else{
+      onSave(data);
+    }
+
+  }
+
+  console.log({currentStep,gl: layout.groups.length});
 
   return (
-    <ImaginaryFormContext.Provider value={{onSave,setFieldValue,getFieldValue,fields,values:data}}>
+    <ImaginaryFormContext.Provider value={{onNext,onBack,setFieldValue,getFieldValue,fields,values:data}}>
       {children}
     </ImaginaryFormContext.Provider>
   )
@@ -179,10 +217,14 @@ const Input = (props: IField) => {
 }
 
 const Form = () => {
-  const {fields,setFieldValue,values,onSave} = useContext(ImaginaryFormContext);
+  const {fields,setFieldValue,values,onNext,onBack} = useContext(ImaginaryFormContext);
   const formHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSave(values);
+    onNext();
+  }
+  const backHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onBack();
   }
   return (
     <>
@@ -218,6 +260,7 @@ const Form = () => {
             </div>
           );
         })}
+        <button onClick={backHandler}>Back</button>
         <input type="submit" value="Submit" />
         </form>
      </>
