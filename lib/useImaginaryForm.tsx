@@ -6,11 +6,14 @@ const ImaginaryFormContext = createContext<{
     fields: TFields;
     setFieldValue: (name: string, value: string | number | undefined) => void;
     getFieldValue: (name: string) => string | number | undefined;
-    values: TValuesObj;
     onNext: () => void;
     onBack: () => void;
     getFieldError: (name: string) => string | undefined;
-    groupNav: [];
+    groupNav: {
+        href: string;
+        label: string;
+        step: number;
+    }[];
     goToStep: (step: number) => void;
 }>(
     // @ts-ignore
@@ -103,6 +106,21 @@ export const ImaginaryFormProvider = ({ children, layout, onSave }: {
         return undefined;
     }
 
+    const groupNav = useMemo(() => {
+        return layout.groups.map((group) => {
+            return {
+                href: `#${group.id}`,
+                label: group.label,
+                step: group.order,
+            }
+        });
+    }, [layout]);
+    const goToStep =  (step: number) => {
+        if (step > 0 && step <= layout.groups.length) {
+            setCurrentStep(step);
+        }
+    }
+
 
     return (
         <ImaginaryFormContext.Provider value={{
@@ -112,8 +130,8 @@ export const ImaginaryFormProvider = ({ children, layout, onSave }: {
             getFieldValue,
             getFieldError,
             fields,
-            //@todo not send values
-            values: data,
+            goToStep,
+            groupNav,
         }}>
             {children}
         </ImaginaryFormContext.Provider>

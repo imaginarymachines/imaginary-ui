@@ -38,7 +38,7 @@ export interface ILayout {
 }
 
 const Form = () => {
-    const {fields,setFieldValue,values,onNext,onBack} = useImaginaryForm();
+    const {fields,onNext,onBack} = useImaginaryForm();
     const formHandler = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       onNext();
