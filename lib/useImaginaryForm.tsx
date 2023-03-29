@@ -84,6 +84,7 @@ export const ImaginaryFormProvider = ({ children, layout, onSave }: {
         let rules = collectFieldRules(fields);
         let values = collectFieldValues(fields, data);
         let { errors, isValid } = validator(values, rules);
+        console.log({ errors, isValid});
         if (!isValid) {
             setErrors(errors);
             return;
@@ -112,6 +113,7 @@ export const ImaginaryFormProvider = ({ children, layout, onSave }: {
                 href: `#${group.id}`,
                 label: group.label,
                 step: group.order,
+                disabled: false,
             }
         });
     }, [layout]);

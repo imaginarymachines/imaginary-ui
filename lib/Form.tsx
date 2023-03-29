@@ -1,6 +1,7 @@
-import { Fragment,  useCallback,  useMemo, useState,  } from 'react';
-import { InputArea, SelectArea, TFields } from './Fields';
-import { Breadcrumbs, ImaginaryRow } from './Ui';
+import { Fragment, memo, useCallback, useMemo, useState, } from 'react';
+import { IField, InputArea, SelectArea, TFields } from './Fields';
+import { Row100 } from './FormRows';
+import { Breadcrumbs,  } from './Ui';
 import useImaginaryForm, { ImaginaryFormProvider } from './useImaginaryForm';
 
 
@@ -8,13 +9,13 @@ import useImaginaryForm, { ImaginaryFormProvider } from './useImaginaryForm';
 const FormBreadCrumbs = () => {
     const { groupNav, goToStep } = useImaginaryForm();
     return (
-        <Breadcrumbs links={groupNav} onClick={(clicked:any) => {
+        <Breadcrumbs links={groupNav} onClick={(clicked: any) => {
             goToStep(clicked.step);
         }} />
     );
 }
 
-const getFieldById = (layout:ILayout,fieldId:string) => {
+const getFieldById = (layout: ILayout, fieldId: string) => {
     return layout.fields.find((field) => {
         return field.id === fieldId;
     });
@@ -37,39 +38,35 @@ export interface ILayout {
     label: string,
 }
 
+
+
 const Form = () => {
-    const {fields,onNext,onBack} = useImaginaryForm();
+    const { fields, onNext, onBack } = useImaginaryForm();
     const formHandler = (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      onNext();
+        alert(1);
+        e.preventDefault();
+        onNext();
     }
     const backHandler = (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      onBack();
+        e.preventDefault();
+        onBack();
     }
     return (
-      <>
-        <form onSubmit={formHandler}>
-          {fields.map((field) => {
-            if( 'select' === field.fieldType ) {
-              return (
-                <Fragment key={field.id}>
-                <SelectArea {...field} />
-              </Fragment>
-              )
-            }
-            return (
-              <Fragment key={field.id}>
-                <InputArea {...field} />
-              </Fragment>
-            )
-          })}
-          <button onClick={backHandler}>Back</button>
-          <input type="submit" value="Submit" />
-          </form>
-       </>
+        <>
+            <form onSubmit={formHandler}>
+                {fields.map((field) => {
+                    return (
+                        <Fragment key={field.id}>
+                            <Row100 field={field} />
+                        </Fragment>
+                    )
+                })}
+                <button onClick={backHandler}>Back</button>
+                <input type="submit" value="Submit" />
+            </form>
+        </>
     );
 
-  }
+}
 
 export default Form;

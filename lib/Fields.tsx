@@ -113,8 +113,9 @@ export const InputArea = ({ label, name, type, id, description = '',className= '
     description?: string,
 
 }) => {
-    const {getFieldValue,setFieldValue} = useImaginaryForm();
+    const {getFieldValue,setFieldValue,getFieldError} = useImaginaryForm();
     const ref = useRef(null);
+    const errrorMessage = getFieldError(name);
     const onBlur = (e:any) => {
         setFieldValue(name, e.target.value);
     }
@@ -127,7 +128,7 @@ export const InputArea = ({ label, name, type, id, description = '',className= '
 
 
     return (
-        <FieldWrapper id={id} label={label}  name={name} errrorMessage={''} description={description} >
+        <FieldWrapper id={id} label={label}  name={name} errrorMessage={errrorMessage} description={description} >
             <div className="flex flex-col items-start">
             <input
                 type={type}
