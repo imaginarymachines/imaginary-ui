@@ -1,5 +1,5 @@
 import { Fragment,  useCallback,  useMemo, useState,  } from 'react';
-import { InputArea, TFields } from './Fields';
+import { InputArea, SelectArea, TFields } from './Fields';
 import { Breadcrumbs, ImaginaryRow } from './Ui';
 import useImaginaryForm, { ImaginaryFormProvider } from './useImaginaryForm';
 
@@ -53,23 +53,9 @@ const Form = () => {
           {fields.map((field) => {
             if( 'select' === field.fieldType ) {
               return (
-                <div key={field.id}>
-                  <label htmlFor={field.id}>{field.label}</label>
-                  <select
-                    value={values[field.name]}
-                    onChange={(e) => {
-                      setFieldValue(field.name,e.target.value);
-                    }}
-                    id={field.id}
-                    name={field.name}
-                  >
-                    {field.options ?field.options.map((option) => {
-                      return (
-                        <option key={option.value}value={option.value}>{option.label}</option>
-                      )
-                    }) : null}
-                  </select>
-                </div>
+                <Fragment key={field.id}>
+                <SelectArea {...field} />
+              </Fragment>
               )
             }
             return (

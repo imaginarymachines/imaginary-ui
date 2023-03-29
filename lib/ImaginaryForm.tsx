@@ -12,8 +12,8 @@ export default function ImaginaryForm({layout,onSave}:{
     return (
         <>
           <ImaginaryFormProvider layout={layout} onSave={onSave}>
-            <Form /><div>patns</div>
+            <Form />
           </ImaginaryFormProvider>
-          </>
+        </>
       );
 }

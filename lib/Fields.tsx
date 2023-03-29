@@ -101,7 +101,6 @@ export const SelectArea = ({ label, name, id,description = '', isFocused = false
                     )
                 })}
                 </select>
-
         </FieldWrapper>
     )
 }
