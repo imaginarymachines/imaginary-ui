@@ -1,7 +1,7 @@
-import { Button } from "../lib";
 import { ILayout } from "../lib/Form";
 import "./App.css";
-import {useState} from 'react';
+import {createContext, useState,useMemo,useContext} from 'react';
+import { IField, TFields } from "../lib/Fields";
 
 const layout : ILayout = {
   id: "vendor",
@@ -118,19 +118,69 @@ const layout : ILayout = {
     }
 ]
 }
-function App() {
-  const [values,setValues] =useState<any>(()=> {
+
+const ImaginaryFormContext = createContext<{
+  fields: TFields;
+  setFieldValue : (name: string, value: string|number|undefined) => void,
+  getFieldValue : (name: string) => string|number|undefined,
+  values: {[key:string]: string|number|undefined},
+}>(
+  // @ts-ignore
+  null
+);
+
+const ImaginaryFormProvider = ({children,layout}: {
+  children: React.ReactNode,
+  layout: ILayout,
+}) => {
+
+  const [data,setData] =useState<any>(()=> {
     const v : {[key:string]: string|number|undefined}= {};
     layout.fields.forEach((field) => {
       v[field.name] = field.defaultValue;
     });
     return v;
   });
+
+  const setFieldValue = (name: string, value: string|number|undefined) => {
+    setData({
+      ...data,
+      [name]: value,
+    });
+  }
+  const getFieldValue = (name: string) => {
+    return data[name];
+  }
+
+  const fields = useMemo(() => {
+    return layout.fields;
+
+  },[layout]);
+
+  return (
+    <ImaginaryFormContext.Provider value={{setFieldValue,getFieldValue,fields,values:data}}>
+      {children}
+    </ImaginaryFormContext.Provider>
+  )
+}
+
+const Input = (props: IField) => {
+  const {getFieldValue,setFieldValue} = useContext(ImaginaryFormContext);
+  return (
+    <div>
+      <input name={props.name} defaultValue={getFieldValue(props.name)} onBlur={(e) => {
+        setFieldValue(props.name,e.target.value);
+      }} />
+      </div>
+  )
+}
+
+const Form = () => {
+  const {fields,setFieldValue,values} = useContext(ImaginaryFormContext);
   const formHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(values);
   }
-
   return (
     <>
       <form onSubmit={formHandler}>
@@ -142,10 +192,7 @@ function App() {
                 <select
                   value={values[field.name]}
                   onChange={(e) => {
-                    setValues({
-                      ...values,
-                      [field.name]: e.target.value,
-                    });
+                    setFieldValue(field.name,e.target.value);
                   }}
                   id={field.id}
                   name={field.name}
@@ -164,24 +211,26 @@ function App() {
           return (
             <div key={field.id}>
               <label htmlFor={field.id}>{field.label}</label>
-              <input
-                id={field.id}
-                name={field.name}
-                type={field.type}
-                defaultValue={field.defaultValue}
-                onBlur={(e) => {
-                  setValues({
-                    ...values,
-                    [field.name]: e.target.value,
-                  });
-                }}
-              />
+              <Input {...field} />
             </div>
           );
         })}
         <input type="submit" value="Submit" />
         </form>
      </>
+  );
+
+}
+function App() {
+
+
+
+  return (
+    <>
+      <ImaginaryFormProvider layout={layout}>
+        <Form />
+      </ImaginaryFormProvider>
+      </>
   );
 }
 
