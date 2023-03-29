@@ -12,7 +12,7 @@ export type TOptions = IOption[];
 export interface IField {
   id: string;
   type: string;
-  fieldType:TFieldTypes;
+  fieldType?:TFieldTypes;
   defaultValue?: string;
   label: string;
   name: string;
@@ -32,13 +32,12 @@ const setFieldValue = (name: string, value: string) => {
 const getFieldValue = (name: string):string|undefined => {
     return '';
 }
-export function  InputError({ message, className = '', ...props }:{
+export function  InputError({ message, className = '' }:{
     message: string,
     className?: string,
-    props?: any
 }) {
     return message ? (
-        <p {...props} className={'text-sm text-red-600 ' + className}>
+        <p className={'text-sm text-red-600 ' + className}>
             {message}
         </p>
     ) : null;

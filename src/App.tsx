@@ -1,7 +1,8 @@
 import { ILayout } from "../lib/Form";
 import "./App.css";
-import {createContext, useState,useMemo,useContext} from 'react';
+import {createContext, useState,useMemo,useContext, Fragment} from 'react';
 import { IField, TFields } from "../lib/Fields";
+import { collectFieldRules,validator, collectFieldValues, TValuesObj } from "../lib/utils";
 
 const layout : ILayout = {
   id: "vendor",
@@ -121,11 +122,12 @@ const layout : ILayout = {
 
 const ImaginaryFormContext = createContext<{
   fields: TFields;
-  setFieldValue : (name: string, value: string|number|undefined) => void,
-  getFieldValue : (name: string) => string|number|undefined,
-  values: {[key:string]: string|number|undefined},
+  setFieldValue : (name: string, value: string|number|undefined) => void;
+  getFieldValue : (name: string) => string|number|undefined;
+  values: TValuesObj;
   onNext: () => void;
   onBack: () => void;
+  getFieldError: (name: string) => string|undefined;
 }>(
   // @ts-ignore
   null
@@ -134,7 +136,7 @@ const ImaginaryFormContext = createContext<{
 const ImaginaryFormProvider = ({children,layout,onSave}: {
   children: React.ReactNode,
   layout: ILayout,
-  onSave: (values: {[key:string]: string|number|undefined}) => void,
+  onSave: (values: TValuesObj) => void,
 }) => {
 
   //steps as id: order
@@ -148,13 +150,18 @@ const ImaginaryFormProvider = ({children,layout,onSave}: {
   //current step number
   const [currentStep,setCurrentStep] = useState<number>(1);
   //field data
-  const [data,setData] =useState<any>(()=> {
-    const v : {[key:string]: string|number|undefined}= {};
+  //Do not make this public
+  //@todo useReducer/ store
+  const [data,setData] =useState<TValuesObj>(()=> {
+    const v : TValuesObj = {};
     layout.fields.forEach((field) => {
       v[field.name] = field.defaultValue;
     });
     return v;
   });
+
+  //error messages
+  const [errors,setErrors] = useState<{[key:string]: string}>({});
 
   const setFieldValue = (name: string, value: string|number|undefined) => {
     setData({
@@ -181,13 +188,23 @@ const ImaginaryFormProvider = ({children,layout,onSave}: {
   },[layout,currentStep]);
 
   const onBack = () => {
-    console.log('back',currentStep, currentStep > 1);
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
   }
 
   const onNext = () => {
+    let rules = collectFieldRules(fields);
+    let values = collectFieldValues(fields,data);
+    let {errors,isValid} =  validator(values,rules);
+    console.log({rules,values,isValid});
+    if (!isValid) {
+      setErrors(errors);
+      return;
+    }else{
+      setErrors({});
+    }
+
     if (currentStep < layout.groups.length) {
       setCurrentStep(currentStep + 1);
     }else{
@@ -196,10 +213,25 @@ const ImaginaryFormProvider = ({children,layout,onSave}: {
 
   }
 
-  console.log({currentStep,gl: layout.groups.length});
+  const getFieldError = (name: string) : string|undefined => {
+    if( errors[name]){
+      return errors[name];
+    }
+    return undefined;
+  }
+
 
   return (
-    <ImaginaryFormContext.Provider value={{onNext,onBack,setFieldValue,getFieldValue,fields,values:data}}>
+    <ImaginaryFormContext.Provider value={{
+      onNext,
+      onBack,
+      setFieldValue,
+      getFieldValue,
+      getFieldError,
+      fields,
+      //@todo not send values
+      values:data,
+    }}>
       {children}
     </ImaginaryFormContext.Provider>
   )
@@ -215,6 +247,21 @@ const Input = (props: IField) => {
       </div>
   )
 }
+
+const InputArea = (props:IField) => {
+  const {getFieldError} = useContext(ImaginaryFormContext);
+  const errorMessage = getFieldError(props.name);
+  return (
+    <div key={props.id}>
+      <label htmlFor={props.id}>
+        <span>{props.label}</span>
+        {props.required ? <span>*</span> : null}
+      </label>
+      <Input {...props} />
+      {errorMessage ? <span>{errorMessage}</span> : null}
+    </div>
+  )
+};
 
 const Form = () => {
   const {fields,setFieldValue,values,onNext,onBack} = useContext(ImaginaryFormContext);
@@ -251,14 +298,11 @@ const Form = () => {
               </div>
             )
           }
-
-
           return (
-            <div key={field.id}>
-              <label htmlFor={field.id}>{field.label}</label>
-              <Input {...field} />
-            </div>
-          );
+            <Fragment key={field.id}>
+              <InputArea {...field} />
+            </Fragment>
+          )
         })}
         <button onClick={backHandler}>Back</button>
         <input type="submit" value="Submit" />
