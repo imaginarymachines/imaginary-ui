@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import useImaginaryForm from './useImaginaryForm';
 
 
 export type TFieldTypes = 'input'|'select';
@@ -25,13 +26,7 @@ export interface IField {
 export type TFields = IField[];
 
 
-const setFieldValue = (name: string, value: string) => {
-    console.log(name, value);
-}
 
-const getFieldValue = (name: string):string|undefined => {
-    return '';
-}
 export function  InputError({ message, className = '' }:{
     message: string,
     className?: string,
@@ -118,6 +113,7 @@ export const InputArea = ({ label, name, type, id, description = '',className= '
     description?: string,
 
 }) => {
+    const {getFieldValue,setFieldValue} = useImaginaryForm();
     const ref = useRef(null);
     const onBlur = (e:any) => {
         setFieldValue(name, e.target.value);
@@ -134,13 +130,16 @@ export const InputArea = ({ label, name, type, id, description = '',className= '
         <FieldWrapper id={id} label={label}  name={name} errrorMessage={''} description={description} >
             <div className="flex flex-col items-start">
             <input
-                {...props}
                 type={type}
                 className={
                     'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm ' +
                     className
                 }
                 ref={ref}
+                id={id}
+                name={name}
+                defaultValue={getFieldValue(name)}
+                onBlur={onBlur}
             />
         </div>
         </FieldWrapper>

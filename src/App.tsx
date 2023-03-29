@@ -3,6 +3,7 @@ import "./App.css";
 import {createContext, useState,useMemo,useContext, Fragment} from 'react';
 import { IField, TFields } from "../lib/Fields";
 import { collectFieldRules,validator, collectFieldValues, TValuesObj } from "../lib/utils";
+import ImaginaryForm from "../lib/ImaginaryForm";
 
 const layout : ILayout = {
   id: "vendor",
@@ -54,7 +55,7 @@ const layout : ILayout = {
         "label": "Title",
         "type": "text",
         "fieldType": "input",
-        "defaultValue": undefined,
+        "defaultValue": 'Tunes',
         "description": "Name of the vendor company. Used in text such as Visit the %s website",
         "options": [],
         "required": true
@@ -263,54 +264,7 @@ const InputArea = (props:IField) => {
   )
 };
 
-const Form = () => {
-  const {fields,setFieldValue,values,onNext,onBack} = useContext(ImaginaryFormContext);
-  const formHandler = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    onNext();
-  }
-  const backHandler = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    onBack();
-  }
-  return (
-    <>
-      <form onSubmit={formHandler}>
-        {fields.map((field) => {
-          if( 'select' === field.fieldType ) {
-            return (
-              <div key={field.id}>
-                <label htmlFor={field.id}>{field.label}</label>
-                <select
-                  value={values[field.name]}
-                  onChange={(e) => {
-                    setFieldValue(field.name,e.target.value);
-                  }}
-                  id={field.id}
-                  name={field.name}
-                >
-                  {field.options ?field.options.map((option) => {
-                    return (
-                      <option key={option.value}value={option.value}>{option.label}</option>
-                    )
-                  }) : null}
-                </select>
-              </div>
-            )
-          }
-          return (
-            <Fragment key={field.id}>
-              <InputArea {...field} />
-            </Fragment>
-          )
-        })}
-        <button onClick={backHandler}>Back</button>
-        <input type="submit" value="Submit" />
-        </form>
-     </>
-  );
 
-}
 function App() {
 
   const onSave = (data: any) => {
@@ -319,9 +273,8 @@ function App() {
 
   return (
     <>
-      <ImaginaryFormProvider layout={layout} onSave={onSave}>
-        <Form />
-      </ImaginaryFormProvider>
+      <ImaginaryForm layout={layout} onSave={onSave}/>
+
       </>
   );
 }

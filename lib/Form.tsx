@@ -1,52 +1,14 @@
 import { Fragment,  useCallback,  useMemo, useState,  } from 'react';
-import { TFields } from './Fields';
+import { InputArea, TFields } from './Fields';
 import { Breadcrumbs, ImaginaryRow } from './Ui';
 import useImaginaryForm, { ImaginaryFormProvider } from './useImaginaryForm';
 
-const Form = () => {
-    const { isValidating, fields, currentStep, FormLabel, forwardButtonText, backButtonText, onNext, onBack, errors } = useImaginaryForm();
-    const handler = useCallback((e:any) => {
-        e.preventDefault();
-        onNext();
-    }, [onNext]);
 
-    return (
-        <Fragment>
-            <>
-                {useMemo(
-                    () => (
-                        <form onSubmit={handler}>
-                            {FormLabel ? (<FormLabel />) : null}
-                            {fields ? fields.map(({ type, fields, id }) => {
-                                return (
-                                    <Fragment key={id}>
-                                        <ImaginaryRow type={type} fields={fields} />
-                                    </Fragment>
-                                )
-                            }) : null}
-                            <div className={`flex items-center justify-end gap-x-6 border-t border-gray-900/10 py-4 px-4 sm:px-8`}>
-                                {backButtonText ? (
-                                <button
-                                    className='text-sm font-semibold leading-6 text-gray-900'
-                                onClick={onBack}>{backButtonText}</button>) : null}
-                                <input type="submit" value={forwardButtonText}
-                                    className="rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                />
-                            </div>
-                        </form>),
-                    [currentStep, errors,isValidating,fields,onBack,backButtonText,forwardButtonText,FormLabel]
-                )}
-            </>
-        </Fragment>
-    );
-
-
-}
 
 const FormBreadCrumbs = () => {
-    const { groupNames, goToStep } = useImaginaryForm();
+    const { groupNav, goToStep } = useImaginaryForm();
     return (
-        <Breadcrumbs links={groupNames} onClick={(clicked:any) => {
+        <Breadcrumbs links={groupNav} onClick={(clicked:any) => {
             goToStep(clicked.step);
         }} />
     );
@@ -74,35 +36,54 @@ export interface ILayout {
     id: string,
     label: string,
 }
-export const ImaginaryForm = ({ layout, onSave }:{
-    layout: ILayout,
-    onSave: (data:any) => void,
-}) => {
-    //State for all fields
-    const [data, setData] = useState(() => {
-        let _data = {};
-        layout.groups.forEach((group) => {
-            group.fields.forEach((fieldId) => {
-                let field = getFieldById(layout,fieldId);
-                _data[fieldId] = field.defaultValue && undefined !== field.defaultValue ? field.defaultValue : '';
 
-            });
-        });
-        return _data;
-    });
-
+const Form = () => {
+    const {fields,setFieldValue,values,onNext,onBack} = useImaginaryForm();
+    const formHandler = (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      onNext();
+    }
+    const backHandler = (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      onBack();
+    }
     return (
-        <div>
-            <h2 className="text-2xl font-bold leading-tight tracking-tight">{layout.label}</h2>
-            <Fragment>
-                <ImaginaryFormProvider  data={data} setData={setData} layout={layout} onSave={onSave}>
-                    <FormBreadCrumbs />
-                    <Form />
-                </ImaginaryFormProvider>
-            </Fragment>
-        </div>
-
-
+      <>
+        <form onSubmit={formHandler}>
+          {fields.map((field) => {
+            if( 'select' === field.fieldType ) {
+              return (
+                <div key={field.id}>
+                  <label htmlFor={field.id}>{field.label}</label>
+                  <select
+                    value={values[field.name]}
+                    onChange={(e) => {
+                      setFieldValue(field.name,e.target.value);
+                    }}
+                    id={field.id}
+                    name={field.name}
+                  >
+                    {field.options ?field.options.map((option) => {
+                      return (
+                        <option key={option.value}value={option.value}>{option.label}</option>
+                      )
+                    }) : null}
+                  </select>
+                </div>
+              )
+            }
+            return (
+              <Fragment key={field.id}>
+                <InputArea {...field} />
+              </Fragment>
+            )
+          })}
+          <button onClick={backHandler}>Back</button>
+          <input type="submit" value="Submit" />
+          </form>
+       </>
     );
 
-}
+  }
+
+export default Form;

@@ -1,214 +1,126 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { fieldTo100Row, validator } from './utils';
+import { createContext, useState, useMemo, useContext } from "react";
+import { TFields } from "./Fields";
+import { ILayout } from "./Form";
+import { collectFieldRules, collectFieldValues, TValuesObj, validator } from "./utils";
+const ImaginaryFormContext = createContext<{
+    fields: TFields;
+    setFieldValue: (name: string, value: string | number | undefined) => void;
+    getFieldValue: (name: string) => string | number | undefined;
+    values: TValuesObj;
+    onNext: () => void;
+    onBack: () => void;
+    getFieldError: (name: string) => string | undefined;
+    groupNav: [];
+    goToStep: (step: number) => void;
+}>(
+    // @ts-ignore
+    null
+);
 
+export const ImaginaryFormProvider = ({ children, layout, onSave }: {
+    children: React.ReactNode,
+    layout: ILayout,
+    onSave: (values: TValuesObj) => void,
+}) => {
 
-//React context ImaginaryFormContext
-//{data:{}, setData: () => {},errors: {}}
-const ImaginaryFormContext = React.createContext(null);
-//Provider
-export const ImaginaryFormProvider = ({ data, setData, children, layout, onSave }) => {
-
-    const groups = useMemo(() => {
-        return layout.groups;
-    }, [layout.groups]);
-    //Which step are we on?
-    const [currentStep, setCurrentStep] = useState(1);
-    //Field errors
-    const [errors, setErrors] = useState(() => {
-        return {};
-    });
-    //is validating ?
-    const [isValidating, setIsValidating] = useState(false);
-
-    //Steps stepNumber: groupId
-    //{[key: int]: string}]}
-    const steps = useMemo(() => {
-        let s = {}
-        groups.forEach((group) => {
-            s[parseInt(group.order, 10)] = group.id;
+    //steps as id: order
+    const steps = useMemo<{ [key: string]: number }>(() => {
+        let s: { [key: string]: number } = {};
+        layout.groups.forEach((group) => {
+            s[group.id] = group.order;
         });
         return s;
-    }, [groups]);
-
-    //Current step ID
-    //string
-    const stepId = useMemo(() => {
-        return steps[currentStep];
-    }, [currentStep, steps]);
-    //Current group
-    const currentGroup = useMemo(() => {
-        return groups.find((group) => {
-            return group.id === stepId;
+    }, [layout]);
+    //current step number
+    const [currentStep, setCurrentStep] = useState<number>(1);
+    //field data
+    //Do not make this public
+    //@todo useReducer/ store
+    const [data, setData] = useState<TValuesObj>(() => {
+        const v: TValuesObj = {};
+        layout.fields.forEach((field) => {
+            v[field.name] = field.defaultValue;
         });
-    }, [stepId, groups]);
+        return v;
+    });
 
+    //error messages
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-    //Set state for one field
-    const setFieldValue = (id, value) => {
+    const setFieldValue = (name: string, value: string | number | undefined) => {
         setData({
             ...data,
-            [id]: value
+            [name]: value,
         });
     }
+    const getFieldValue = (name: string) => {
+        return data[name];
+    }
 
-    //Fields of current group
-    const { fieldNames, fields, FormLabel } = useMemo(() => {
-        let fieldNames = {}
-        let fields = [];
-        if (currentGroup) {
-            currentGroup.fields.forEach((fieldName) => {
-                let field = layout.fields.find((field) => {
-                    return field.name === fieldName;
-                });
-                if (field) {
-                    let value = field.value ?? field.defaultValue;
-                    fieldNames[fieldName] = value ?? '';
-                    fields.push(field);
-                }
-            });
-        }
-        return {
-            fieldNames,
-            fields: fields.map(fieldTo100Row),
-            FormLabel: () => (
-                <div className='mt-4'>
-                    <h3 className={`text-xl font-bold leading-tight tracking-tight`}>{currentGroup?.label ?? ''}</h3>
-                    {currentGroup?.description ? (
-                        <p className={`text-sm font-medium leading-6 text-gray-900`}>
-                            <>
-                                {currentGroup?.link ? (
-                                        <a
-                                            target={'_blank'}
-                                            href={currentGroup?.link} className="border-b-2 border-indigo-500" >
-                                            {currentGroup?.description}
-                                        </a>
-                                    ):
-                                    (<span>{currentGroup?.description}</span>)
-                                }
-                            </>
-                        </p>
-                    ) : null}
-
-                </div>
-            )
-        }
-    }, [currentGroup]);
-
-
-    //Handler for next button
-    const onNext = useCallback(() => {
-        setIsValidating(true);
-        //get field rules and values for current step
-        let rules = {};
-        let fieldValues = {};
-        currentGroup.fields.forEach((fieldName) => {
-            let field = layout.fields.find((field) => {
-                return field.name === fieldName;
-            });
-            if (field) {
-                rules[fieldName] = field.rules;
-                //if field.required add rule
-                if (field.required) {
-                    rules[fieldName] = rules[fieldName]
-                        ? rules[fieldName] + '|required' : 'required';
-                }
-                if (data[fieldName]) {
-                    fieldValues[fieldName] = data[fieldName];
-                } else {
-                    fieldValues[fieldName] = field.defaultValue;
-                }
-            }
+    const fields = useMemo<TFields>(() => {
+        //fields in current step
+        const currentGroup = layout.groups.find((group) => {
+            return group.order === currentStep;
         });
-        let { isValid, errors } = validator(fieldValues, rules,);
-        if (isValid) {
-            setErrors({});
-            //is last step?
-            if (currentStep === Object.keys(steps).length) {
-                //submit
-                onSave(data, (errors) => {
-                    setErrors(errors);
-                });
-            } else {
-                setCurrentStep(currentStep + 1);
-            }
-        } else {
-            setErrors(errors);
+        if (!currentGroup) {
+            return [];
         }
-        setIsValidating(false);
+        return layout.fields.filter((field) => {
+            return currentGroup.fields.includes(field.name);
+        });
 
+    }, [layout, currentStep]);
 
-    }, [setIsValidating, currentGroup, setErrors, onSave, steps, validator, layout.fields, data]);
-
-    //Handler for back button
-    const onBack = useCallback(() => {
+    const onBack = () => {
         if (currentStep > 1) {
             setCurrentStep(currentStep - 1);
         }
-    }, [currentStep,]);
-
-    //Text for next and back buttons
-    const { forwardButtonText, backButtonText } = useMemo(() => {
-        //Next unless is last step
-        let forwardButtonText = 'Next';
-        if (currentStep === Object.keys(steps).length) {
-            forwardButtonText = 'Submit';
-        }
-        let backButtonText = 'Back';
-        if (currentStep === 1) {
-            backButtonText = undefined;
-        }
-        return {
-            forwardButtonText,
-            backButtonText
-        }
-    }, [currentStep, steps]);
-
-    //Group names for navigation
-    const groupNames = useMemo(() => {
-        return groups.map((group) => {
-            return {
-                name: group.label,
-                current: false,
-                href: '#',
-                id: group.id,
-                step: parseInt(group.order, 10),
-                //if is after current step
-                disabled: parseInt(group.order, 10) > currentStep,
-                current: parseInt(group.order, 10) === currentStep
-            }
-        });
-    }, [groups, currentStep]);
-
-    //go back to step if is before current
-    const goToStep = (step) => {
-        if (step < currentStep) {
-            setCurrentStep(step);
-        }
     }
+
+    const onNext = () => {
+        let rules = collectFieldRules(fields);
+        let values = collectFieldValues(fields, data);
+        let { errors, isValid } = validator(values, rules);
+        if (!isValid) {
+            setErrors(errors);
+            return;
+        } else {
+            setErrors({});
+        }
+
+        if (currentStep < layout.groups.length) {
+            setCurrentStep(currentStep + 1);
+        } else {
+            onSave(data);
+        }
+
+    }
+
+    const getFieldError = (name: string): string | undefined => {
+        if (errors[name]) {
+            return errors[name];
+        }
+        return undefined;
+    }
+
 
     return (
         <ImaginaryFormContext.Provider value={{
-            groupNames,
-            onBack,
-            forwardButtonText,
-            backButtonText,
             onNext,
-            currentStep,
-            fieldNames,
-            fields,
-            data,
+            onBack,
             setFieldValue,
-            errors,
-            FormLabel,
-            goToStep,
-            isValidating
+            getFieldValue,
+            getFieldError,
+            fields,
+            //@todo not send values
+            values: data,
         }}>
             {children}
         </ImaginaryFormContext.Provider>
     )
 }
-//useImaginaryForm()
-const useImaginaryForm = () => {
-    return React.useContext(ImaginaryFormContext);
+
+
+export default function useImaginaryForm() {
+    return useContext(ImaginaryFormContext);
 }
-export default useImaginaryForm;
