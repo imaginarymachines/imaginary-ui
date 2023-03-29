@@ -124,14 +124,17 @@ const ImaginaryFormContext = createContext<{
   setFieldValue : (name: string, value: string|number|undefined) => void,
   getFieldValue : (name: string) => string|number|undefined,
   values: {[key:string]: string|number|undefined},
+  onSave: (values: {[key:string]: string|number|undefined}) => void,
+
 }>(
   // @ts-ignore
   null
 );
 
-const ImaginaryFormProvider = ({children,layout}: {
+const ImaginaryFormProvider = ({children,layout,onSave}: {
   children: React.ReactNode,
   layout: ILayout,
+  onSave: (values: {[key:string]: string|number|undefined}) => void,
 }) => {
 
   const [data,setData] =useState<any>(()=> {
@@ -158,7 +161,7 @@ const ImaginaryFormProvider = ({children,layout}: {
   },[layout]);
 
   return (
-    <ImaginaryFormContext.Provider value={{setFieldValue,getFieldValue,fields,values:data}}>
+    <ImaginaryFormContext.Provider value={{onSave,setFieldValue,getFieldValue,fields,values:data}}>
       {children}
     </ImaginaryFormContext.Provider>
   )
@@ -176,15 +179,15 @@ const Input = (props: IField) => {
 }
 
 const Form = () => {
-  const {fields,setFieldValue,values} = useContext(ImaginaryFormContext);
+  const {fields,setFieldValue,values,onSave} = useContext(ImaginaryFormContext);
   const formHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(values);
+    onSave(values);
   }
   return (
     <>
       <form onSubmit={formHandler}>
-        {layout.fields.map((field) => {
+        {fields.map((field) => {
           if( 'select' === field.fieldType ) {
             return (
               <div key={field.id}>
@@ -223,11 +226,13 @@ const Form = () => {
 }
 function App() {
 
-
+  const onSave = (data: any) => {
+    console.log(data);
+  }
 
   return (
     <>
-      <ImaginaryFormProvider layout={layout}>
+      <ImaginaryFormProvider layout={layout} onSave={onSave}>
         <Form />
       </ImaginaryFormProvider>
       </>
