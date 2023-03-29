@@ -49,6 +49,7 @@
     "eslint": "^8.33.0",
     "fetch-lite": "^1.1.0",
     "inquirer": "^9.1.4",
+    "jsdom": "^21.1.1",
     "kolorist": "^1.6.0",
     "postcss": "^8.4.21",
     "prettier": "^2.8.4",

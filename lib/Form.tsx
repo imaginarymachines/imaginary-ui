@@ -1,10 +1,11 @@
 import { Fragment,  useCallback,  useMemo, useState,  } from 'react';
+import { TFields } from './Fields';
 import { Breadcrumbs, ImaginaryRow } from './Ui';
 import useImaginaryForm, { ImaginaryFormProvider } from './useImaginaryForm';
 
 const Form = () => {
     const { isValidating, fields, currentStep, FormLabel, forwardButtonText, backButtonText, onNext, onBack, errors } = useImaginaryForm();
-    const handler = useCallback((e) => {
+    const handler = useCallback((e:any) => {
         e.preventDefault();
         onNext();
     }, [onNext]);
@@ -45,18 +46,38 @@ const Form = () => {
 const FormBreadCrumbs = () => {
     const { groupNames, goToStep } = useImaginaryForm();
     return (
-        <Breadcrumbs links={groupNames} onClick={(clicked) => {
+        <Breadcrumbs links={groupNames} onClick={(clicked:any) => {
             goToStep(clicked.step);
         }} />
     );
 }
 
-const getFieldById = (layout,fieldId) => {
+const getFieldById = (layout:ILayout,fieldId:string) => {
     return layout.fields.find((field) => {
         return field.id === fieldId;
     });
 };
-export const ImaginaryForm = ({ layout, onSave }) => {
+
+export interface IGroup {
+    id: string;
+    label: string;
+    description?: string;
+    link?: string;
+    order: number;
+    //names of fields in this group
+    fields: string[];
+}
+export type TGroups = IGroup[];
+export interface ILayout {
+    fields: TFields,
+    groups: TGroups,
+    id: string,
+    label: string,
+}
+export const ImaginaryForm = ({ layout, onSave }:{
+    layout: ILayout,
+    onSave: (data:any) => void,
+}) => {
     //State for all fields
     const [data, setData] = useState(() => {
         let _data = {};

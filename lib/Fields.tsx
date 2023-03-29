@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-export type TRowTypes = 'Row100'| 'Row50';
+
 export type TFieldTypes = 'input'|'select';
 
 export interface IOption {
@@ -13,17 +13,17 @@ export interface IField {
   id: string;
   type: string;
   fieldType:TFieldTypes;
+  defaultValue?: string;
   label: string;
   name: string;
   description?: string;
+  link? : string;
   required?: boolean;
-    options?:TOptions;
+  options?:TOptions;
+  rules? : string;
 }
-export interface IRow {
-    id: string;
-    type: TRowTypes;
-    fields: IField[];
-}
+export type TFields = IField[];
+
 
 const setFieldValue = (name: string, value: string) => {
     console.log(name, value);
@@ -110,14 +110,13 @@ export const SelectArea = ({ label, name, id,description = '', isFocused = false
         </FieldWrapper>
     )
 }
-export const InputArea = ({ label, name, type, id, description = '',className= '',isFocused = false, ...props }:{
+export const InputArea = ({ label, name, type, id, description = '',className= '', ...props }:{
     label: string,
     name: string,
     type: string,
     id: string,
     className?: string,
     description?: string,
-    isFocused?: boolean
 
 }) => {
     const ref = useRef(null);
