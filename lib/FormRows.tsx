@@ -1,4 +1,5 @@
-import { SelectArea,IField, InputArea } from "./Fields"
+import { IField } from "./Fields"
+import { useImaginaryUi } from "./ImaginaryUi";
 export interface IRow {
     id: string;
     type: TRowTypes;
@@ -9,6 +10,7 @@ export interface IRow {
 const ImaginaryField = ({ field }: {
     field: IField
 }) => {
+    const {SelectArea,InputArea} = useImaginaryUi();
     return (
         <>
         {

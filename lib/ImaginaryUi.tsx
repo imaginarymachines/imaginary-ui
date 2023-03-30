@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext,useContext } from "react";
 import { IFieldArea,  } from "./Fields";
 
 export interface IImaginaryUiComponents {
@@ -25,4 +25,12 @@ export const ImaginaryUiProvider = ({ children, InputArea,SelectArea}: IImaginar
             {children}
         </ImaginaryUiContext.Provider>
     );
+}
+
+export const useImaginaryUi = () => {
+    const context = useContext(ImaginaryUiContext);
+    if (context === undefined) {
+        throw new Error('useImaginaryUi must be used within a ImaginaryUiProvider');
+    }
+    return context;
 }
