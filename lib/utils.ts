@@ -106,7 +106,7 @@ export function validator(data: TValuesObj, rules: TRules) {
       //if key is not in data
       if (!data[key]) {
         if (fieldRules.includes("required")) {
-          errors[key] = "required";
+          errors[key] = "Required";
         } else {
           //if key is in data and not undefined
           if (data[key] && undefined !== data[key]) {
