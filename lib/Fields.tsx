@@ -1,140 +1,178 @@
-import { useEffect, useRef } from 'react';
-import useImaginaryForm from './useImaginaryForm';
+import { useEffect, useRef } from "react";
+import useImaginaryForm from "./useImaginaryForm";
 
-
-export type TFieldTypes = 'input'|'select';
+export type TFieldTypes = "input" | "select";
 
 export interface IOption {
-    value: string;
-    label: string;
+  value: string;
+  label: string;
 }
 
 export type TOptions = IOption[];
 export interface IField {
   id: string;
   type: string;
-  fieldType?:TFieldTypes;
+  fieldType?: TFieldTypes;
   defaultValue?: string;
   label: string;
   name: string;
   description?: string;
-  link? : string;
+  link?: string;
   required?: boolean;
-  options?:TOptions;
-  rules? : string;
+  options?: TOptions;
+  rules?: string;
 }
 export type TFields = IField[];
 
-
-
-export function  InputError({ message, className = '' }:{
-    message: string,
-    className?: string,
+export function InputError({
+  message,
+  className = "",
+}: {
+  message: string;
+  className?: string;
 }) {
-    return message ? (
-        <p className={'text-sm text-red-600 ' + className}>
-            {message}
-        </p>
-    ) : null;
+  return message ? (
+    <p className={"text-sm text-red-600 " + className}>{message}</p>
+  ) : null;
 }
 
-export function InputLabel({ value,htmlFor, className = '', children,  }:{
-    value: string,
-    htmlFor: string,
-    className?: string,
-    children?: any,
+export function InputLabel({
+  value,
+  htmlFor,
+  className = "",
+  children,
+}: {
+  value: string;
+  htmlFor: string;
+  className?: string;
+  children?: any;
 }) {
-    return (
-        <label htmlFor={htmlFor} className={`block font-medium text-sm text-gray-700 ` + className}>
-            {value ? value : children}
-        </label>
-    );
+  return (
+    <label
+      htmlFor={htmlFor}
+      className={`block font-medium text-sm text-gray-700 ` + className}
+    >
+      {value ? value : children}
+    </label>
+  );
 }
 
 export interface IFieldWrapper {
-    children: any,
-    id: string,
-    label: string,
-    errrorMessage?: string,
-    description?: string
-};
+  children: any;
+  id: string;
+  label: string;
+  errrorMessage?: string;
+  description?: string;
+}
 
 export interface IFieldArea extends IField {
-    errrorMessage?: string,
-    className?: string,
+  errrorMessage?: string;
+  className?: string;
 }
-export const FieldWrapper = ({ children,id,label,errrorMessage = '',description  = '' }:IFieldWrapper) => {
-    return (
-        <div className="mt-4 w-full">
-            <InputLabel htmlFor={id} value={label} />
-            {children}
-            {description ? (<p id={`${id}-description`}
-                className={`${errrorMessage ? 'bg-red ' : ''}mt-2 text-sm text-gray-500`}>{description}</p>) : null}
-            <InputError message={errrorMessage} className="mt-2" />
-        </div>
-    );
-}
+export const FieldWrapper = ({
+  children,
+  id,
+  label,
+  errrorMessage = "",
+  description = "",
+}: IFieldWrapper) => {
+  return (
+    <div className="mt-4 w-full">
+      <InputLabel htmlFor={id} value={label} />
+      {children}
+      {description ? (
+        <p
+          id={`${id}-description`}
+          className={`${
+            errrorMessage ? "bg-red " : ""
+          }mt-2 text-sm text-gray-500`}
+        >
+          {description}
+        </p>
+      ) : null}
+      <InputError message={errrorMessage} className="mt-2" />
+    </div>
+  );
+};
 export const SelectArea = ({
-    label,
-    name,
-    id,
-    description = '',
-    options = [],
-    errrorMessage = ''
- }:IFieldArea) => {
-    const {getFieldValue,setFieldValue} = useImaginaryForm();
-    const value = getFieldValue(name);
+  label,
+  name,
+  id,
+  description = "",
+  options = [],
+  errrorMessage = "",
+}: IFieldArea) => {
+  const { getFieldValue, setFieldValue } = useImaginaryForm();
+  const value = getFieldValue(name);
 
-    return (
-        <FieldWrapper id={id}  errrorMessage={errrorMessage} label={label} description={description}>
-            <select
-                id={id}
-                name={name}
-                value={value}
-                onChange={(e) => {
-                    setFieldValue(name, e.target.value);
-                }}
-                >
-                {options.map((option) => {
-                    return (
-                        <option key={option.value} value={option.value}>{option.label}</option>
-                    )
-                })}
-                </select>
-        </FieldWrapper>
-    )
-}
-export const InputArea = ({ label, name, type, id, description = '',className= '', }:IFieldArea) => {
-    const {getFieldValue,setFieldValue,getFieldError} = useImaginaryForm();
-    const ref = useRef(null);
-    const errrorMessage = getFieldError(name);
-    const onBlur = (e:any) => {
-        setFieldValue(name, e.target.value);
+  return (
+    <FieldWrapper
+      id={id}
+      errrorMessage={errrorMessage}
+      label={label}
+      description={description}
+    >
+      <select
+        id={id}
+        name={name}
+        value={value}
+        onChange={(e) => {
+          setFieldValue(name, e.target.value);
+        }}
+      >
+        {options.map((option) => {
+          return (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          );
+        })}
+      </select>
+    </FieldWrapper>
+  );
+};
+export const InputArea = ({
+  label,
+  name,
+  type,
+  id,
+  description = "",
+  className = "",
+}: IFieldArea) => {
+  const { getFieldValue, setFieldValue, getFieldError } = useImaginaryForm();
+  const ref = useRef(null);
+  const errrorMessage = getFieldError(name);
+  const onBlur = (e: any) => {
+    setFieldValue(name, e.target.value);
+  };
+  useEffect(() => {
+    if (getFieldValue(name)) {
+      // @ts-ignore
+      ref.current.value = getFieldValue(name);
     }
-    useEffect(() => {
-        if( getFieldValue(name) ){
-            // @ts-ignore
-            ref.current.value = getFieldValue(name);
-        }
-    }, []);
+  }, []);
 
-
-    return (
-        <FieldWrapper id={id} label={label} errrorMessage={errrorMessage} description={description} >
-            <div className="flex flex-col items-start">
-            <input
-                type={type}
-                className={
-                    'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm ' +
-                    className
-                }
-                ref={ref}
-                id={id}
-                name={name}
-                defaultValue={getFieldValue(name)}
-                onBlur={onBlur}
-            />
-        </div>
-        </FieldWrapper>
-    );
-}
+  return (
+    <FieldWrapper
+      id={id}
+      label={label}
+      errrorMessage={errrorMessage}
+      description={description}
+    >
+      <div className="flex flex-col items-start">
+        <input
+          type={type}
+          className={
+            "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm " +
+            className
+          }
+          ref={ref}
+          id={id}
+          name={name}
+          defaultValue={getFieldValue(name)}
+          onBlur={onBlur}
+        />
+      </div>
+    </FieldWrapper>
+  );
+};
