@@ -1,7 +1,16 @@
 import { Meta } from "@storybook/react";
 import type { StoryObj } from "@storybook/react";
+import { createElement } from "react";
 
-import { Button } from "../lib";
+const Button = (props: { type: string; size: string }) =>
+  createElement(
+    "button",
+    {
+      type: "button",
+      className: `btn btn-${props.type} btn-${props.size}`,
+    },
+    "Button"
+  );
 
 // More on how to set up stories at: https://storybook.js.org/docs/7.0/react/writing-stories/introduction
 const meta = {

@@ -2,6 +2,7 @@ import { Fragment, useMemo } from "react";
 import { TFields } from "./Fields";
 import { Row100 } from "./FormRows";
 import useImaginaryForm, { ImaginaryFormProvider } from "./useImaginaryForm";
+import { useImaginaryUi } from "./useImaginaryUi";
 
 export interface IGroup {
   id: string;
@@ -23,6 +24,7 @@ export interface ILayout {
 const Form = () => {
   const { fields, onNext, onBack, currentStep, totalSteps } =
     useImaginaryForm();
+  const { FormButton, SubmitButton } = useImaginaryUi();
   const formHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onNext();
@@ -49,9 +51,9 @@ const Form = () => {
           );
         })}
         {currentStep > 1 ? (
-          <button onClick={backHandler}>{backBtnText}</button>
+          <FormButton onClick={backHandler} text={backBtnText} />
         ) : null}
-        <input type="submit" value={nextBtnText} />
+        <SubmitButton text={nextBtnText} />
       </form>
     </>
   );

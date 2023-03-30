@@ -1,7 +1,7 @@
 import { ILayout } from "../lib/Form";
 import "./App.css";
 import { ImaginaryForm } from "../lib/ImaginaryForm";
-import { InputArea, SelectArea } from "../lib";
+import { IImaginaryUiComponents, InputArea, SelectArea } from "../lib";
 
 const layout: ILayout = {
   id: "vendor",
@@ -122,17 +122,18 @@ function App() {
   const onSave = (data: any) => {
     console.log(data);
   };
+  const components: IImaginaryUiComponents = {
+    InputArea: InputArea,
+    SelectArea: SelectArea,
+    FormButton: ({ text, onClick }) => (
+      <button onClick={onClick}>{text}</button>
+    ),
+    SubmitButton: ({ text }) => <input type="submit" value={text} />,
+  };
 
   return (
     <>
-      <ImaginaryForm
-        components={{
-          InputArea: InputArea,
-          SelectArea: SelectArea,
-        }}
-        layout={layout}
-        onSave={onSave}
-      />
+      <ImaginaryForm components={components} layout={layout} onSave={onSave} />
     </>
   );
 }

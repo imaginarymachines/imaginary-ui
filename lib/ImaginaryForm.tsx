@@ -28,9 +28,8 @@ export function ImaginaryForm({
   withBreadcrumb?: boolean;
   components: IImaginaryUiComponents;
 }) {
-  const { InputArea, SelectArea } = components;
   return (
-    <ImaginaryUiProvider SelectArea={SelectArea} InputArea={InputArea}>
+    <ImaginaryUiProvider {...components}>
       <ImaginaryFormProvider layout={layout} onSave={onSave}>
         {withBreadcrumb ? <FormBreadCrumbs /> : null}
         <Form />

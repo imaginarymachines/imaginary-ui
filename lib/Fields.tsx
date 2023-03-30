@@ -24,6 +24,15 @@ export interface IField {
 }
 export type TFields = IField[];
 
+export interface IButton {
+  text: string;
+  onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+}
+
+export interface ISubmitButton {
+  text: string;
+}
+
 export function InputError({
   message,
   className = "",

@@ -1,9 +1,11 @@
 import { createContext, useContext } from "react";
-import { IFieldArea } from "./Fields";
+import { IButton, IFieldArea, ISubmitButton } from "./Fields";
 
 export interface IImaginaryUiComponents {
   SelectArea: React.FC<IFieldArea>;
   InputArea: React.FC<IFieldArea>;
+  FormButton: React.FC<IButton>;
+  SubmitButton: React.FC<ISubmitButton>;
 }
 //context that holds components
 export const ImaginaryUiContext = createContext<IImaginaryUiComponents>(
@@ -20,12 +22,16 @@ export const ImaginaryUiProvider = ({
   children,
   InputArea,
   SelectArea,
+  FormButton,
+  SubmitButton,
 }: IImaginaryUiProvider) => {
   return (
     <ImaginaryUiContext.Provider
       value={{
         InputArea,
         SelectArea,
+        FormButton,
+        SubmitButton,
       }}
     >
       {children}
