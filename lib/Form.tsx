@@ -1,26 +1,7 @@
 import { Fragment } from "react";
 import { TFields } from "./Fields";
 import { Row100 } from "./FormRows";
-import { Breadcrumbs } from "./Navigation";
 import useImaginaryForm, { ImaginaryFormProvider } from "./useImaginaryForm";
-
-const FormBreadCrumbs = () => {
-  const { groupNav, goToStep } = useImaginaryForm();
-  return (
-    <Breadcrumbs
-      links={groupNav}
-      onClick={(clicked: any) => {
-        goToStep(clicked.step);
-      }}
-    />
-  );
-};
-
-const getFieldById = (layout: ILayout, fieldId: string) => {
-  return layout.fields.find((field) => {
-    return field.id === fieldId;
-  });
-};
 
 export interface IGroup {
   id: string;
