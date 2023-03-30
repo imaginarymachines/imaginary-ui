@@ -1,6 +1,19 @@
-import { useEffect, useRef } from "react";
-import { FieldWrapper, IFieldArea } from "./FieldWrapper";
+import {
+  FieldWrapper,
+  IFieldArea,
+  IFrieldWrapperClassNames,
+} from "./FieldWrapper";
 import useImaginaryForm from "./useImaginaryForm";
+
+export interface FormFields {
+  Input: React.FC<IInputProps>;
+  Select: React.FC<ISelectProps>;
+  fieldWrapperClassName: IFrieldWrapperClassNames;
+  FieldLabel: React.FC<ILabelProps>;
+  FieldError: React.FC<IFieldErrorProps>;
+  Button: React.FC<IButton>;
+  SubmitButton: React.FC<ISubmitButton>;
+}
 
 export type TFieldTypes = "input" | "select";
 
@@ -8,7 +21,6 @@ export interface IOption {
   value: string;
   label: string;
 }
-
 export type TOptions = IOption[];
 export interface IField {
   id: string;
@@ -20,8 +32,8 @@ export interface IField {
   description?: string;
   link?: string;
   required?: boolean;
-  options?: TOptions;
   rules?: string;
+  options?: TOptions;
 }
 export type TFields = IField[];
 
@@ -34,46 +46,77 @@ export interface ISubmitButton {
   text: string;
 }
 
-export function InputError({
-  message,
-  className = "",
-}: {
+export interface IFieldErrorProps {
   message: string;
   className?: string;
-}) {
-  return message ? (
-    <p className={"text-sm text-red-600 " + className}>{message}</p>
-  ) : null;
 }
 
-
-export interface FormFields {
-  Input: React.FC<IFieldArea>;
+export function InputError({
+  message,
+  className = "text-sm text-red-600 mt-2",
+}: IFieldErrorProps) {
+  return message ? <p className={className}>{message}</p> : null;
 }
 
+export interface IInputProps {
+  type: string;
+  className?: string;
+  id: string;
+  name: string;
+  onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
+  defaultValue?: string | number;
+}
 
-
-export function InputLabel({
-  value,
-  htmlFor,
-  className = "",
-  children,
-}: {
-  value: string;
+export interface ILabelProps {
   htmlFor: string;
   className?: string;
-  children?: any;
-}) {
+  children: string | React.ReactNode;
+}
+
+export function FieldLabel({ htmlFor, className = "", children }: ILabelProps) {
   return (
-    <label
-      htmlFor={htmlFor}
-      className={`block font-medium text-sm text-gray-700 ` + className}
-    >
-      {value ? value : children}
+    <label htmlFor={htmlFor} className={className}>
+      {children}
     </label>
   );
 }
-
+export interface ISelectProps {
+  id: string;
+  name: string;
+  options: TOptions;
+  onChange: (newValue: string | number | undefined) => void;
+  value: string | number | undefined;
+}
+export const Select = ({
+  id,
+  name,
+  options,
+  onChange,
+  value,
+}: ISelectProps) => {
+  return (
+    <select
+      id={id}
+      name={name}
+      value={value}
+      onChange={(e) => {
+        onChange(e.target.value);
+      }}
+    >
+      {options.map((option) => {
+        return (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        );
+      })}
+    </select>
+  );
+};
+export interface ISelectArea extends IFieldArea {
+  onChange: (newValue: string | number | undefined) => void;
+  options: TOptions;
+}
 export const SelectArea = ({
   label,
   name,
@@ -81,7 +124,7 @@ export const SelectArea = ({
   description = "",
   options = [],
   errrorMessage = "",
-}: IFieldArea) => {
+}: ISelectArea) => {
   const { getFieldValue, setFieldValue } = useImaginaryForm();
   const value = getFieldValue(name);
 
@@ -92,78 +135,48 @@ export const SelectArea = ({
       label={label}
       description={description}
     >
-      <select
+      <Select
         id={id}
         name={name}
+        options={options}
         value={value}
-        onChange={(e) => {
-          setFieldValue(name, e.target.value);
+        onChange={(newValue) => {
+          setFieldValue(name, newValue);
         }}
-      >
-        {options.map((option) => {
-          return (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          );
-        })}
-      </select>
+      />
     </FieldWrapper>
   );
 };
 
 export const Input = ({
-  label,
-  name,
   type,
+  className = "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm",
   id,
-  description = "",
-  className = "",
-}: IFieldArea) => {
-  const { getFieldValue, setFieldValue, getFieldError } = useImaginaryForm();
-  const ref = useRef(null);
-  const errrorMessage = getFieldError(name);
-  const onBlur = (e: any) => {
-    setFieldValue(name, e.target.value);
-  };
-  useEffect(() => {
-    if (getFieldValue(name)) {
-      // @ts-ignore
-      ref.current.value = getFieldValue(name);
-    }
-  }, []);
-
+  name,
+  onBlur,
+  defaultValue,
+}: IInputProps) => {
   return (
-    <FieldWrapper
-      id={id}
-      label={label}
-      errrorMessage={errrorMessage}
-      description={description}
-    >
-      <div className="flex flex-col items-start">
-        <input
-          type={type}
-          className={
-            "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm " +
-            className
-          }
-          ref={ref}
-          id={id}
-          name={name}
-          defaultValue={getFieldValue(name)}
-          onBlur={onBlur}
-        />
-      </div>
-    </FieldWrapper>
+    <div className="flex flex-col items-start">
+      <input
+        type={type}
+        className={className}
+        id={id}
+        name={name}
+        defaultValue={defaultValue}
+        onBlur={onBlur}
+      />
+    </div>
   );
 };
+
 export const InputArea = ({
   label,
   name,
   type,
   id,
-  description = "",
-  className = "",
+  description,
+  className,
 }: IFieldArea) => {
   const { getFieldValue, setFieldValue, getFieldError } = useImaginaryForm();
   const errrorMessage = getFieldError(name);
@@ -177,19 +190,16 @@ export const InputArea = ({
       errrorMessage={errrorMessage}
       description={description}
     >
-      <div className="flex flex-col items-start">
-        <input
+      <>
+        <Input
           type={type}
-          className={
-            "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm " +
-            className
-          }
+          className={className}
           id={id}
           name={name}
           defaultValue={getFieldValue(name)}
           onBlur={onBlur}
         />
-      </div>
+      </>
     </FieldWrapper>
   );
 };

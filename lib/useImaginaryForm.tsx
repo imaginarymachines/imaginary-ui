@@ -19,6 +19,8 @@ const ImaginaryFormContext = createContext<{
   goToStep: (step: number) => void;
   totalSteps: number;
   currentStep: number;
+  hasErrors: boolean;
+  isValidating: boolean;
 }>(
   // @ts-ignore
   null
@@ -58,6 +60,9 @@ export const ImaginaryFormProvider = ({
     return v;
   });
 
+  //isValidating
+  const [isValidating, setIsValidating] = useState<boolean>(false);
+
   //error messages
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
@@ -91,10 +96,10 @@ export const ImaginaryFormProvider = ({
   };
 
   const onNext = () => {
+    setIsValidating(true);
     let rules = collectFieldRules(fields);
     let values = collectFieldValues(fields, data);
     let { errors, isValid } = validator(values, rules);
-    console.log({ errors, isValid });
     if (!isValid) {
       setErrors(errors);
       return;
@@ -107,6 +112,7 @@ export const ImaginaryFormProvider = ({
     } else {
       onSave(data);
     }
+    setIsValidating(false);
   };
 
   const getFieldError = (name: string): string | undefined => {
@@ -139,6 +145,10 @@ export const ImaginaryFormProvider = ({
     }
   };
 
+  const hasErrors = useMemo(() => {
+    return Object.keys(errors).length > 0;
+  }, [errors]);
+
   return (
     <ImaginaryFormContext.Provider
       value={{
@@ -152,6 +162,8 @@ export const ImaginaryFormProvider = ({
         groupNav,
         totalSteps,
         currentStep,
+        hasErrors,
+        isValidating,
       }}
     >
       {children}

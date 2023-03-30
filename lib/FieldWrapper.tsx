@@ -1,6 +1,6 @@
-import { IField, InputError, InputLabel } from "./Fields";
+import { IField, InputError, FieldLabel } from "./Fields";
 
-export interface IFieldWrapper {
+export interface IFieldWrapperProps {
   children: any;
   id: string;
   label: string;
@@ -12,28 +12,32 @@ export interface IFieldArea extends IField {
   errrorMessage?: string;
   className?: string;
 }
+
+export interface IFrieldWrapperClassNames {
+  className: string;
+  descClassName: string;
+}
+
 export const FieldWrapper = ({
   children,
   id,
   label,
   errrorMessage = "",
   description = "",
-}: IFieldWrapper) => {
+  classNames,
+}: IFieldWrapperProps & {
+  classNames: IFrieldWrapperClassNames;
+}) => {
   return (
-    <div className="mt-4 w-full">
-      <InputLabel htmlFor={id} value={label} />
+    <div className={classNames.className}>
+      <FieldLabel htmlFor={id}>{label}</FieldLabel>
       {children}
       {description ? (
-        <p
-          id={`${id}-description`}
-          className={`${
-            errrorMessage ? "bg-red " : ""
-          }mt-2 text-sm text-gray-500`}
-        >
+        <p id={`${id}-description`} className={classNames.descClassName}>
           {description}
         </p>
       ) : null}
-      <InputError message={errrorMessage} className="mt-2" />
+      <InputError message={errrorMessage} />
     </div>
   );
 };

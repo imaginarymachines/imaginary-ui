@@ -1,12 +1,11 @@
 import { createContext, useContext } from "react";
-import { IButton, ISubmitButton } from "./Fields";
-import { IFieldArea } from "./FieldWrapper";
+import { FormFields, IButton, ISelectArea, ISubmitButton } from "./Fields";
+import { FieldWrapper, IFieldArea, IFieldWrapperProps } from "./FieldWrapper";
+import useImaginaryForm from "./useImaginaryForm";
 
-export interface FormFields {
-}
 export interface IImaginaryUiComponents {
-  SelectArea: React.FC<IFieldArea>;
   InputArea: React.FC<IFieldArea>;
+  SelectArea: React.FC<ISelectArea>;
   FormButton: React.FC<IButton>;
   SubmitButton: React.FC<ISubmitButton>;
 }

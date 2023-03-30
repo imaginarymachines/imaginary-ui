@@ -1,7 +1,7 @@
 import { ILayout } from "../lib/Form";
 import "./App.css";
 import { ImaginaryForm } from "../lib/ImaginaryForm";
-import { IImaginaryUiComponents, InputArea, SelectArea } from "../lib";
+import { FieldLabel, FormFields, Input, InputError, Select } from "../lib";
 
 const layout: ILayout = {
   id: "vendor",
@@ -39,7 +39,6 @@ const layout: ILayout = {
       defaultValue: undefined,
       description:
         "Slug for vendor. Must be unique. Must be shorter than 96 characters. Must not be a reserved namespace: trustedlogin, client, vendor, admin, wordpress.",
-      options: [],
       required: true,
       rules: "lowercase|alpha_dash",
     },
@@ -52,7 +51,6 @@ const layout: ILayout = {
       defaultValue: "Tunes",
       description:
         "Name of the vendor company. Used in text such as Visit the %s website",
-      options: [],
       required: true,
     },
     {
@@ -65,7 +63,6 @@ const layout: ILayout = {
       link: "https://docs.trustedlogin.com/Client/configuration#email-hash",
       description:
         "Email address for support. Used when creating usernames. Recommended: use {hash} dynamic replacement ",
-      options: [],
       required: true,
       rules: "email",
     },
@@ -78,7 +75,6 @@ const layout: ILayout = {
       defaultValue: undefined,
       description:
         "URL to the vendor support page. Shown to users in the Grant Access form and also serves as a backup to redirect users if the TrustedLogin server is unreachable. Must be a valid URL.",
-      options: [],
       required: true,
       rules: "url",
     },
@@ -90,7 +86,6 @@ const layout: ILayout = {
       fieldType: "input",
       defaultValue: undefined,
       description: "",
-      options: [],
       required: true,
       rules: "url",
     },
@@ -122,12 +117,16 @@ function App() {
   const onSave = (data: any) => {
     console.log(data);
   };
-  const components: IImaginaryUiComponents = {
-    InputArea: InputArea,
-    SelectArea: SelectArea,
-    FormButton: ({ text, onClick }) => (
-      <button onClick={onClick}>{text}</button>
-    ),
+  const components: FormFields = {
+    Input: Input,
+    Select: Select,
+    fieldWrapperClassName: {
+      className: "mt-4 w-full",
+      descClassName: "mt-2 text-sm text-gray-500",
+    },
+    FieldLabel: FieldLabel,
+    FieldError: InputError,
+    Button: ({ text, onClick }) => <button onClick={onClick}>{text}</button>,
     SubmitButton: ({ text }) => <input type="submit" value={text} />,
   };
 
