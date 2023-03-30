@@ -1,6 +1,7 @@
 import { ILayout } from "../lib/Form";
 import "./App.css";
-import {ImaginaryForm} from "../lib/ImaginaryForm";
+import { ImaginaryForm } from "../lib/ImaginaryForm";
+import { InputArea, SelectArea } from "../lib";
 
 const layout: ILayout = {
   id: "vendor",
@@ -124,7 +125,14 @@ function App() {
 
   return (
     <>
-      <ImaginaryForm layout={layout} onSave={onSave} />
+      <ImaginaryForm
+        components={{
+          InputArea: InputArea,
+          SelectArea: SelectArea,
+        }}
+        layout={layout}
+        onSave={onSave}
+      />
     </>
   );
 }

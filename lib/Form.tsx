@@ -21,7 +21,8 @@ export interface ILayout {
 }
 
 const Form = () => {
-  const { fields, onNext, onBack,currentStep,totalSteps } = useImaginaryForm();
+  const { fields, onNext, onBack, currentStep, totalSteps } =
+    useImaginaryForm();
   const formHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onNext();
@@ -31,7 +32,7 @@ const Form = () => {
     e.preventDefault();
     onBack();
   };
-  const {backBtnText,nextBtnText} = useMemo(() => {
+  const { backBtnText, nextBtnText } = useMemo(() => {
     return {
       backBtnText: "Back",
       nextBtnText: currentStep === totalSteps ? "Save" : "Next",
@@ -48,12 +49,8 @@ const Form = () => {
           );
         })}
         {currentStep > 1 ? (
-          <button
-            onClick={backHandler}
-          >
-              {backBtnText}
-          </button>
-        ):null}
+          <button onClick={backHandler}>{backBtnText}</button>
+        ) : null}
         <input type="submit" value={nextBtnText} />
       </form>
     </>
