@@ -16,10 +16,12 @@ Very beta.
   - `npm run test`
   - Tests are for util functions.
   - Will use [storybook interactions](https://storybook.js.org/addons/@storybook/addon-interactions)
-- Lint
+- Run Lint
   - `npm run lint`
-- Format
+- Run Formatter
   - `npm run format`
+- Run type checker
+  - `npm run check`
 - Run Storybook
   - `npm run storybook`
   - Not yet.

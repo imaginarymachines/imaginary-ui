@@ -1,5 +1,5 @@
 import { IField } from "./Fields";
-import { IRow } from "./Navigation";
+import { IRow } from "./FormRows";
 export type TValuesObj = { [key: string]: string | number | undefined };
 
 export function welcomeMessage(name: string): string {

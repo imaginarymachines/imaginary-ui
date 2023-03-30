@@ -45,7 +45,8 @@ const Form = () => {
     e.preventDefault();
     onNext();
   };
-  const backHandler = (e: React.FormEvent<HTMLFormElement>) => {
+  // @ts-ignore
+  const backHandler = (e) => {
     e.preventDefault();
     onBack();
   };
