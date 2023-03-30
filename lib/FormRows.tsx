@@ -43,7 +43,7 @@ export const Row5050 = ({
       </div>
       <div className="sm:col-span-3">
         {"undefined" !== typeof fieldTwo ? (
-        <ImaginaryField field={fieldTwo} />
+          <ImaginaryField field={fieldTwo} />
         ) : null}
       </div>
     </div>

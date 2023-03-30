@@ -2,14 +2,20 @@
 
 Config-driven React UI.
 
+https://github.com/imaginarymachines/imaginary-ui
+
 Very beta.
 
 Used [moishinetzer/PBandJ](https://github.com/moishinetzer/PBandJ)
 
+## Install
+
+- `npm i @imaginary-machines/imaginary-ui`
+
 ## Development
 
 - Clone
-  - `git clone ...`
+  - `git clone https://github.com/imaginarymachines/imaginary-ui`
 - Install
   - `npm i`
 - Start demo:
@@ -44,15 +50,25 @@ const layout = {
   //@todo document
 };
 const Test = () => {
-  const onSave = (data) => {
+  function App() {
+  const onSave = (data: any) => {
     console.log(data);
+  };
+  const components: IImaginaryUiComponents = {
+    InputArea: InputArea,
+    SelectArea: SelectArea,
+    FormButton: ({ text, onClick }) => (
+      <button onClick={onClick}>{text}</button>
+    ),
+    SubmitButton: ({ text }) => <input type="submit" value={text} />,
   };
 
   return (
     <>
-      <ImaginaryForm layout={layout} onSave={onSave} />
+      <ImaginaryForm components={components} layout={layout} onSave={onSave} />
     </>
   );
+}
 };
 ```
 

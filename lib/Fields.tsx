@@ -67,7 +67,6 @@ export function InputLabel({
   );
 }
 
-
 export const SelectArea = ({
   label,
   name,
