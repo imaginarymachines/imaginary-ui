@@ -31,16 +31,20 @@ export const Row5050 = ({
   fieldOne,
   fieldTwo,
 }: {
-  fieldOne: IField;
-  fieldTwo: IField;
+  fieldOne?: IField;
+  fieldTwo?: IField;
 }) => {
   return (
     <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
       <div className="sm:col-span-3">
-        <ImaginaryField field={fieldOne} />
+        {"undefined" !== typeof fieldOne ? (
+          <ImaginaryField field={fieldOne} />
+        ) : null}
       </div>
       <div className="sm:col-span-3">
+        {"undefined" !== typeof fieldTwo ? (
         <ImaginaryField field={fieldTwo} />
+        ) : null}
       </div>
     </div>
   );
