@@ -1,6 +1,6 @@
 import { InputArea, SelectArea } from "./Fields";
 import Form, { ILayout } from "./Form";
-import { ImaginaryUiProvider } from "./useImaginaryUi";
+import { IImaginaryUiComponents, ImaginaryUiProvider } from "./useImaginaryUi";
 import { Breadcrumbs, INavItem } from "./Navigation";
 import useImaginaryForm, { ImaginaryFormProvider } from "./useImaginaryForm";
 import { TValuesObj } from "./utils";
@@ -27,6 +27,7 @@ export function ImaginaryForm({
   layout: ILayout;
   onSave: (values: TValuesObj) => void;
   withBreadcrumb?: boolean;
+  components?: IImaginaryUiComponents;
 }) {
   return (
     <ImaginaryUiProvider SelectArea={SelectArea} InputArea={InputArea}>

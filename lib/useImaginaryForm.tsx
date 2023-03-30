@@ -17,6 +17,8 @@ const ImaginaryFormContext = createContext<{
   getFieldError: (name: string) => string | undefined;
   groupNav: INavItems;
   goToStep: (step: number) => void;
+  totalSteps: number;
+  currentStep: number;
 }>(
   // @ts-ignore
   null
@@ -39,6 +41,10 @@ export const ImaginaryFormProvider = ({
     });
     return s;
   }, [layout]);
+  const totalSteps = useMemo(() => {
+    return Object.keys(steps).length;
+  }, [steps]);
+
   //current step number
   const [currentStep, setCurrentStep] = useState<number>(1);
   //field data
@@ -144,6 +150,8 @@ export const ImaginaryFormProvider = ({
         fields,
         goToStep,
         groupNav,
+        totalSteps,
+        currentStep,
       }}
     >
       {children}
