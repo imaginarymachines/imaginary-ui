@@ -1,5 +1,11 @@
 # @imaginary-machines/imaginary-ui
 
+## 0.2.0
+
+### Minor Changes
+
+- 04d81d9: Better component requirments
+
 ## 0.1.0
 
 ### Minor Changes
