@@ -1,9 +1,4 @@
-import {
-  FieldWrapper,
-  IFieldArea,
-  IFrieldWrapperClassNames,
-} from "./FieldWrapper";
-import useImaginaryForm from "./useImaginaryForm";
+import { IFieldArea, IFrieldWrapperClassNames } from "./FieldWrapper";
 
 export interface FormFields {
   Input: React.FC<IInputProps>;
@@ -117,36 +112,6 @@ export interface ISelectArea extends IFieldArea {
   onChange: (newValue: string | number | undefined) => void;
   options: TOptions;
 }
-export const SelectArea = ({
-  label,
-  name,
-  id,
-  description = "",
-  options = [],
-  errrorMessage = "",
-}: ISelectArea) => {
-  const { getFieldValue, setFieldValue } = useImaginaryForm();
-  const value = getFieldValue(name);
-
-  return (
-    <FieldWrapper
-      id={id}
-      errrorMessage={errrorMessage}
-      label={label}
-      description={description}
-    >
-      <Select
-        id={id}
-        name={name}
-        options={options}
-        value={value}
-        onChange={(newValue) => {
-          setFieldValue(name, newValue);
-        }}
-      />
-    </FieldWrapper>
-  );
-};
 
 export const Input = ({
   type,
@@ -167,39 +132,5 @@ export const Input = ({
         onBlur={onBlur}
       />
     </div>
-  );
-};
-
-export const InputArea = ({
-  label,
-  name,
-  type,
-  id,
-  description,
-  className,
-}: IFieldArea) => {
-  const { getFieldValue, setFieldValue, getFieldError } = useImaginaryForm();
-  const errrorMessage = getFieldError(name);
-  const onBlur = (e: any) => {
-    setFieldValue(name, e.target.value);
-  };
-  return (
-    <FieldWrapper
-      id={id}
-      label={label}
-      errrorMessage={errrorMessage}
-      description={description}
-    >
-      <>
-        <Input
-          type={type}
-          className={className}
-          id={id}
-          name={name}
-          defaultValue={getFieldValue(name)}
-          onBlur={onBlur}
-        />
-      </>
-    </FieldWrapper>
   );
 };

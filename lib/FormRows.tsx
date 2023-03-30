@@ -12,6 +12,7 @@ const ImaginaryField = ({ field }: { field: IField }) => {
   return (
     <>
       {"select" === field.fieldType ? (
+        // @ts-ignore
         <SelectArea {...field} />
       ) : (
         <InputArea {...field} />
