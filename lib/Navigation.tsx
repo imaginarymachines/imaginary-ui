@@ -1,14 +1,17 @@
 import { ChevronRightIcon, HomeIcon } from '@heroicons/react/20/solid'
 
-export interface IBreadLink {
-  name: string;
-  current: boolean;
+export interface INavItem {
+  label: string;
+  href: string;
+  active: boolean;
   disabled: boolean;
+  id: string;
 }
-export type TBreadLinks = IBreadLink[];
+export type INavItems = INavItem[];
+
 export function Breadcrumbs({ links, onClick }:{
-  links: TBreadLinks;
-  onClick: (link:IBreadLink) => void;
+  links: INavItems;
+  onClick: (link:INavItem) => void;
 }) {
   return (
     <nav className="flex" aria-label="Breadcrumb">
@@ -21,17 +24,17 @@ export function Breadcrumbs({ links, onClick }:{
             </a>
           </div>
         </li>
-        {links.map((page) => (
-          <li key={page.name}>
+        {links.map((link) => (
+          <li key={link.id}>
             <div className="flex items-center">
               <ChevronRightIcon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
               <button
-                onClick={() => onClick(page)}
-                className={`${page.current ? 'text-gray-900 hover:text-gray-700' : `text-gray-500 hover:text-gray-700`}ml-4 text-sm font-medium`}
-                aria-current={page.current ? 'page' : undefined}
-                disabled={page.disabled}
+                onClick={() => onClick(link)}
+                className={`${link.active ? 'text-gray-900 hover:text-gray-700' : `text-gray-500 hover:text-gray-700`}ml-4 text-sm font-medium`}
+                aria-current={link.active ? 'page' : undefined}
+                disabled={link.disabled}
               >
-                {page.name}
+                {link.label}
               </button>
             </div>
           </li>

@@ -119,10 +119,6 @@ const layout : ILayout = {
 }
 
 
-
-
-
-
 function App() {
   const onSave = (data: any) => {
     console.log(data);
@@ -131,8 +127,7 @@ function App() {
   return (
     <>
       <ImaginaryForm layout={layout} onSave={onSave}/>
-
-      </>
+    </>
   );
 }
 

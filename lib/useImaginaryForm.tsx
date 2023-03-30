@@ -1,6 +1,7 @@
 import { createContext, useState, useMemo, useContext } from "react";
 import { TFields } from "./Fields";
 import { ILayout } from "./Form";
+import { INavItems } from "./Navigation";
 import { collectFieldRules, collectFieldValues, TValuesObj, validator } from "./utils";
 const ImaginaryFormContext = createContext<{
     fields: TFields;
@@ -9,11 +10,7 @@ const ImaginaryFormContext = createContext<{
     onNext: () => void;
     onBack: () => void;
     getFieldError: (name: string) => string | undefined;
-    groupNav: {
-        href: string;
-        label: string;
-        step: number;
-    }[];
+    groupNav: INavItems;
     goToStep: (step: number) => void;
 }>(
     // @ts-ignore
@@ -107,17 +104,24 @@ export const ImaginaryFormProvider = ({ children, layout, onSave }: {
         return undefined;
     }
 
-    const groupNav = useMemo(() => {
+    //Navigation for breadcrumbs, etc.
+    const groupNav = useMemo<INavItems>(() => {
         return layout.groups.map((group) => {
             return {
                 href: `#${group.id}`,
                 label: group.label,
-                step: group.order,
-                disabled: false,
+                id: group.order.toString(),
+                disabled: group.order > currentStep,
+                active: group.order === currentStep,
             }
         });
     }, [layout]);
     const goToStep =  (step: number) => {
+        //do not go forward
+        if(step > currentStep) {
+            return;
+        }
+
         if (step > 0 && step <= layout.groups.length) {
             setCurrentStep(step);
         }
