@@ -58,6 +58,11 @@ export interface IFieldWrapper {
     errrorMessage?: string,
     description?: string
 };
+
+export interface IFieldArea extends IField {
+    errrorMessage?: string,
+    className?: string,
+}
 export const FieldWrapper = ({ children,id,label,errrorMessage = '',description  = '' }:IFieldWrapper) => {
     return (
         <div className="mt-4 w-full">
@@ -69,23 +74,19 @@ export const FieldWrapper = ({ children,id,label,errrorMessage = '',description 
         </div>
     );
 }
-export const SelectArea = ({ label, name, id,description = '', options = [],errrorMessage = '' }:{
-    label: string,
-    name: string,
-    id: string,
-    description?: string,
-    options?: {
-        value: string,
-        label: string
-
-    }[],
-    errrorMessage?: string
-}) => {
+export const SelectArea = ({
+    label,
+    name,
+    id,
+    description = '',
+    options = [],
+    errrorMessage = ''
+ }:IFieldArea) => {
     const {getFieldValue,setFieldValue} = useImaginaryForm();
     const value = getFieldValue(name);
 
     return (
-        <FieldWrapper id={id} name={name} errrorMessage={errrorMessage} label={label} description={description}>
+        <FieldWrapper id={id}  errrorMessage={errrorMessage} label={label} description={description}>
             <select
                 id={id}
                 name={name}
@@ -103,15 +104,7 @@ export const SelectArea = ({ label, name, id,description = '', options = [],errr
         </FieldWrapper>
     )
 }
-export const InputArea = ({ label, name, type, id, description = '',className= '', ...props }:{
-    label: string,
-    name: string,
-    type: string,
-    id: string,
-    className?: string,
-    description?: string,
-
-}) => {
+export const InputArea = ({ label, name, type, id, description = '',className= '', }:IFieldArea) => {
     const {getFieldValue,setFieldValue,getFieldError} = useImaginaryForm();
     const ref = useRef(null);
     const errrorMessage = getFieldError(name);
@@ -127,7 +120,7 @@ export const InputArea = ({ label, name, type, id, description = '',className= '
 
 
     return (
-        <FieldWrapper id={id} label={label}  name={name} errrorMessage={errrorMessage} description={description} >
+        <FieldWrapper id={id} label={label} errrorMessage={errrorMessage} description={description} >
             <div className="flex flex-col items-start">
             <input
                 type={type}

@@ -38,12 +38,9 @@ export interface ILayout {
     label: string,
 }
 
-
-
 const Form = () => {
     const { fields, onNext, onBack } = useImaginaryForm();
     const formHandler = (e: React.FormEvent<HTMLFormElement>) => {
-        alert(1);
         e.preventDefault();
         onNext();
     }
