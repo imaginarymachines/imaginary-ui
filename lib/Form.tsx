@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useMemo } from "react";
 import { TFields } from "./Fields";
 import { Row100 } from "./FormRows";
 import useImaginaryForm, { ImaginaryFormProvider } from "./useImaginaryForm";
@@ -21,7 +21,7 @@ export interface ILayout {
 }
 
 const Form = () => {
-  const { fields, onNext, onBack } = useImaginaryForm();
+  const { fields, onNext, onBack,currentStep,totalSteps } = useImaginaryForm();
   const formHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onNext();
@@ -31,6 +31,12 @@ const Form = () => {
     e.preventDefault();
     onBack();
   };
+  const {backBtnText,nextBtnText} = useMemo(() => {
+    return {
+      backBtnText: "Back",
+      nextBtnText: currentStep === totalSteps ? "Save" : "Next",
+    };
+  }, []);
   return (
     <>
       <form onSubmit={formHandler}>
@@ -41,8 +47,14 @@ const Form = () => {
             </Fragment>
           );
         })}
-        <button onClick={backHandler}>Back</button>
-        <input type="submit" value="Submit" />
+        {currentStep > 1 ? (
+          <button
+            onClick={backHandler}
+          >
+              {backBtnText}
+          </button>
+        ):null}
+        <input type="submit" value={nextBtnText} />
       </form>
     </>
   );
