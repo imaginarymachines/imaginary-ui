@@ -51,14 +51,14 @@ export function InputLabel({ value,htmlFor, className = '', children,  }:{
     );
 }
 
-export const FieldWrapper = ({ children,id,label,errrorMessage = '',name,description  = '' }:{
+export interface IFieldWrapper {
     children: any,
     id: string,
     label: string,
     errrorMessage?: string,
-    name: string,
     description?: string
-}) => {
+};
+export const FieldWrapper = ({ children,id,label,errrorMessage = '',description  = '' }:IFieldWrapper) => {
     return (
         <div className="mt-4 w-full">
             <InputLabel htmlFor={id} value={label} />
@@ -69,12 +69,11 @@ export const FieldWrapper = ({ children,id,label,errrorMessage = '',name,descrip
         </div>
     );
 }
-export const SelectArea = ({ label, name, id,description = '', isFocused = false, options = [],errrorMessage = '' }:{
+export const SelectArea = ({ label, name, id,description = '', options = [],errrorMessage = '' }:{
     label: string,
     name: string,
     id: string,
     description?: string,
-    isFocused?: boolean,
     options?: {
         value: string,
         label: string
