@@ -6,6 +6,11 @@
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "homepage": "https://github.com/imaginarymachines/imaginary-ui/#readme",
+  "bugs": {
+    "url": "https://github.com/imaginarymachines/imaginary-ui/issues",
+    "email": "josh@pluginmachine.com"
+  },
   "files": [
     "dist"
   ],
