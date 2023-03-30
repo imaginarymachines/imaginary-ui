@@ -16,6 +16,8 @@ Very beta.
   - `npm run test`
   - Tests are for util functions.
   - Will use [storybook interactions](https://storybook.js.org/addons/@storybook/addon-interactions)
+- Build lib for release
+  - `npm run build:lib`
 - Run Lint
   - `npm run lint`
 - Run Formatter

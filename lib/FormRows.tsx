@@ -1,5 +1,5 @@
 import { IField } from "./Fields";
-import { useImaginaryUi } from "./ImaginaryUi";
+import { useImaginaryUi } from "./useImaginaryUi";
 export interface IRow {
   id: string;
   type: TRowTypes;

@@ -1,6 +1,6 @@
 import { ILayout } from "../lib/Form";
 import "./App.css";
-import ImaginaryForm from "../lib/ImaginaryForm";
+import { ImaginaryForm } from "../lib/ImaginaryForm";
 
 const layout: ILayout = {
   id: "vendor",

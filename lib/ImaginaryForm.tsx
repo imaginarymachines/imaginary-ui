@@ -1,6 +1,6 @@
 import { InputArea, SelectArea } from "./Fields";
 import Form, { ILayout } from "./Form";
-import { ImaginaryUiProvider } from "./ImaginaryUi";
+import { ImaginaryUiProvider } from "./useImaginaryUi";
 import { Breadcrumbs, INavItem } from "./Navigation";
 import useImaginaryForm, { ImaginaryFormProvider } from "./useImaginaryForm";
 import { TValuesObj } from "./utils";
@@ -19,7 +19,7 @@ const FormBreadCrumbs = () => {
     </>
   );
 };
-export default function ImaginaryForm({
+export function ImaginaryForm({
   layout,
   onSave,
   withBreadcrumb = false,
