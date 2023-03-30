@@ -128,6 +128,9 @@ function App() {
     FieldError: InputError,
     Button: ({ text, onClick }) => <button onClick={onClick}>{text}</button>,
     SubmitButton: ({ text }) => <input type="submit" value={text} />,
+    FormButtonWrap: ({ children }) => (
+      <div className="flex justify-end mt-4">{children}</div>
+    ),
   };
 
   return (

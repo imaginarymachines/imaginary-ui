@@ -35,6 +35,7 @@ const uiMaker = (components: FormFields): IImaginaryUiComponents => {
     FieldError,
     Button,
     SubmitButton,
+    FormButtonWrap,
   } = components;
 
   const TheFieldWrapper = ({
@@ -84,12 +85,13 @@ const uiMaker = (components: FormFields): IImaginaryUiComponents => {
 
     FormButton: Button,
     SubmitButton,
+    FormButtonWrap: FormButtonWrap,
   };
 };
 
 const FormButtons = () => {
   const { currentStep, totalSteps, onBack } = useImaginaryForm();
-  const { FormButton, SubmitButton } = useImaginaryUi();
+  const { FormButton, SubmitButton, FormButtonWrap } = useImaginaryUi();
   const { backBtnText, nextBtnText } = useMemo(() => {
     return {
       backBtnText: "Back",
@@ -103,20 +105,18 @@ const FormButtons = () => {
     onBack();
   };
   return (
-    <>
+    <FormButtonWrap>
       {currentStep > 1 ? (
         <FormButton onClick={backHandler} text={backBtnText} />
       ) : null}
       <SubmitButton text={nextBtnText} />
-    </>
+    </FormButtonWrap>
   );
 };
 
 const Form = ({ components }: { components: FormFields }) => {
-  const { InputArea, SelectArea, FormButton, SubmitButton } = useMemo(
-    () => uiMaker(components),
-    [components]
-  );
+  const { InputArea, SelectArea, FormButton, SubmitButton, FormButtonWrap } =
+    useMemo(() => uiMaker(components), [components]);
   const { fields, onNext, isValidating, currentStep, hasErrors } =
     useImaginaryForm();
   const formHandler = (e: React.FormEvent<HTMLFormElement>) => {
@@ -131,6 +131,7 @@ const Form = ({ components }: { components: FormFields }) => {
           SelectArea,
           FormButton,
           SubmitButton,
+          FormButtonWrap,
         }}
       >
         <form

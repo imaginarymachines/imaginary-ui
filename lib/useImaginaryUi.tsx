@@ -7,6 +7,9 @@ export interface IImaginaryUiComponents {
   SelectArea: React.FC<ISelectArea>;
   FormButton: React.FC<IButton>;
   SubmitButton: React.FC<ISubmitButton>;
+  FormButtonWrap: React.FC<{
+    children: React.ReactNode;
+  }>;
 }
 //context that holds components
 export const ImaginaryUiContext = createContext<IImaginaryUiComponents>(
@@ -25,6 +28,7 @@ export const ImaginaryUiProvider = ({
   SelectArea,
   FormButton,
   SubmitButton,
+  FormButtonWrap,
 }: IImaginaryUiProvider) => {
   return (
     <ImaginaryUiContext.Provider
@@ -33,6 +37,7 @@ export const ImaginaryUiProvider = ({
         SelectArea,
         FormButton,
         SubmitButton,
+        FormButtonWrap,
       }}
     >
       {children}

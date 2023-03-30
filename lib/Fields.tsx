@@ -8,6 +8,9 @@ export interface FormFields {
   FieldError: React.FC<IFieldErrorProps>;
   Button: React.FC<IButton>;
   SubmitButton: React.FC<ISubmitButton>;
+  FormButtonWrap: React.FC<{
+    children: React.ReactNode;
+  }>;
 }
 
 export type TFieldTypes = "input" | "select";
