@@ -75,3 +75,23 @@ const Test = () => {
 ## Changing Components
 
 The `<ImaginaryUiProvider />` and `useImaginaryUi()` hooks provide components.
+
+## Commit a Changeset
+
+Once you have added your token to GitHub secrets, you need to commit a changeset. Generate your first changeset by running:
+
+```sh
+npx changeset
+```
+
+Then commit the changeset log to trigger the GitHub Action.
+
+See [below](#-changesets) for more information on how to use changesets.
+
+> Note: PBandJ has been configured assuming projects use the `main` branch as the default branch. If you use a different branch, you will need to change the `publish.yml` file in the `.github/workflows` folder to use your default branch. You will also need to change the `config.json` file in the `.changeset` folder to use your default branch.
+
+### 5. Merge the Release PR
+
+Once the GitHub Action has been triggered, it will create a PR that will publish your library to npm. Once the PR has been merged, your library will be published to npm!
+
+> Note: Sometimes the GitHub Action can fail, this can be due to a number of reasons most likely it is to do with the name of your package. If this happens, change the name of your package in `package.json`, and either rerun the action or try again from step 4.
