@@ -42,7 +42,7 @@ export interface ISubmitButton {
 }
 
 export interface IFieldErrorProps {
-  message: string;
+  message: string | undefined;
   className?: string;
 }
 

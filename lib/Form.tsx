@@ -1,6 +1,6 @@
 import { Fragment, useMemo } from "react";
 import { TFields, FormFields, ISelectArea } from "./Fields";
-import { FieldWrapper, IFieldArea, IFieldWrapperProps } from "./FieldWrapper";
+import { IFieldArea, IFieldWrapperProps } from "./FieldWrapper";
 import { Row100 } from "./FormRows";
 import useImaginaryForm from "./useImaginaryForm";
 import {
@@ -37,9 +37,27 @@ const uiMaker = (components: FormFields): IImaginaryUiComponents => {
     SubmitButton,
   } = components;
 
-  const TheFieldWrapper = (props: IFieldWrapperProps) => {
-    return <FieldWrapper {...props} classNames={fieldWrapperClassName} />;
-  };
+  const TheFieldWrapper = ({
+    id,
+    label,
+    children,
+    description,
+    errrorMessage,
+  }: IFieldWrapperProps) => (
+    <div className={fieldWrapperClassName.className}>
+      <FieldLabel htmlFor={id}>{label}</FieldLabel>
+      {children}
+      {description ? (
+        <p
+          id={`${id}-description`}
+          className={fieldWrapperClassName.descClassName}
+        >
+          {description}
+        </p>
+      ) : null}
+      <FieldError message={errrorMessage} />
+    </div>
+  );
 
   return {
     InputArea: (props: IFieldArea) => {
