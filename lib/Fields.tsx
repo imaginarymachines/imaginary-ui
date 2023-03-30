@@ -46,6 +46,13 @@ export function InputError({
   ) : null;
 }
 
+
+export interface FormFields {
+  Input: React.FC<IFieldArea>;
+}
+
+
+
 export function InputLabel({
   value,
   htmlFor,
@@ -104,7 +111,8 @@ export const SelectArea = ({
     </FieldWrapper>
   );
 };
-export const InputArea = ({
+
+export const Input = ({
   label,
   name,
   type,
@@ -140,6 +148,42 @@ export const InputArea = ({
             className
           }
           ref={ref}
+          id={id}
+          name={name}
+          defaultValue={getFieldValue(name)}
+          onBlur={onBlur}
+        />
+      </div>
+    </FieldWrapper>
+  );
+};
+export const InputArea = ({
+  label,
+  name,
+  type,
+  id,
+  description = "",
+  className = "",
+}: IFieldArea) => {
+  const { getFieldValue, setFieldValue, getFieldError } = useImaginaryForm();
+  const errrorMessage = getFieldError(name);
+  const onBlur = (e: any) => {
+    setFieldValue(name, e.target.value);
+  };
+  return (
+    <FieldWrapper
+      id={id}
+      label={label}
+      errrorMessage={errrorMessage}
+      description={description}
+    >
+      <div className="flex flex-col items-start">
+        <input
+          type={type}
+          className={
+            "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm " +
+            className
+          }
           id={id}
           name={name}
           defaultValue={getFieldValue(name)}

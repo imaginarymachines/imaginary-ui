@@ -72,6 +72,33 @@ const Test = () => {
 };
 ```
 
+## Tailwind config
+
+In the future, this will have a WordPress preset and a Tailwind preset.
+
+Add `./node_modules/@imaginary-machines/imaginary-ui/dist/*.js',` to `content` in your tailwind.config
+
+```js
+const defaultTheme = require('tailwindcss/defaultTheme');
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+    content: [
+        '..//other paths',
+        './node_modules/@imaginary-machines/imaginary-ui/dist/*.js',
+    ],
+
+    theme: {
+        extend: {
+            fontFamily: {
+                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+            },
+        },
+    },
+
+    plugins: [require('@tailwindcss/forms')],
+};
+```
+
 ## Changing Components
 
 The `<ImaginaryUiProvider />` and `useImaginaryUi()` hooks provide components.
