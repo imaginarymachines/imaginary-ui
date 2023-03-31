@@ -16,10 +16,7 @@ const layout = {
       link: "https://docs.something.com",
       //Names of fields in group
       //Must match id of field in fields
-      fields: [
-        "first_name",
-        "email",
-      ],
+      fields: ["first_name", "email"],
     },
     {
       id: "roles",
@@ -30,7 +27,7 @@ const layout = {
   ],
   fields: [
     {
-        //id and name should be the same
+      //id and name should be the same
       id: "first_name",
       name: "first_name",
       label: "First Name",
@@ -62,7 +59,7 @@ const layout = {
       type: "select",
       defaultValue: "editor",
       description: "",
-         //input|select
+      //input|select
       fieldType: "select",
       //Options for a select field
       options: [

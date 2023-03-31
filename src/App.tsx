@@ -13,10 +13,7 @@ const layout: ILayout = {
       order: 1,
       description: "The vendor information",
       link: "https://docs.trustedlogin.com/Client/configuration",
-      fields: [
-        "first_name",
-        "email",
-      ],
+      fields: ["first_name", "email"],
     },
     {
       id: "roles",
