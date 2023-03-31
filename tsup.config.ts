@@ -8,6 +8,6 @@ export default defineConfig({
   injectStyle: true,
   entry: {
     index: "lib/index.ts",
-    tailwind: "lib/tailwind.ts",
+    tailwind: "lib/tailwind.tsx",
   },
 });

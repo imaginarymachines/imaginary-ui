@@ -43,6 +43,9 @@ export interface IButton {
 export interface ISubmitButton {
   text: string;
 }
+export interface IFormButtonWrapProps {
+  children: React.ReactNode;
+}
 
 export interface IFieldErrorProps {
   message: string | undefined;
