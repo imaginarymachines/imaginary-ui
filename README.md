@@ -40,7 +40,7 @@ Used [moishinetzer/PBandJ](https://github.com/moishinetzer/PBandJ)
 
 ### JSON
 
-- @todo document
+- [Configuration](./docs/config.md)
 
 ## ImaginaryForm
 
