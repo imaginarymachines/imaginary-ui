@@ -1,5 +1,11 @@
 # @imaginary-machines/imaginary-ui
 
+## 0.3.0
+
+### Minor Changes
+
+- d261a0b: form button wrapper
+
 ## 0.2.0
 
 ### Minor Changes
