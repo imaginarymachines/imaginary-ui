@@ -6,4 +6,8 @@ export default defineConfig({
   esbuildPlugins: [cssModulesPlugin()],
   format: ["cjs", "esm"],
   injectStyle: true,
+  entry: {
+    index: "lib/index.ts",
+    tailwind: "lib/tailwind.ts",
+  },
 });
