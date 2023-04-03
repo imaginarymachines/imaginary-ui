@@ -1,8 +1,7 @@
-import { ILayout } from "../lib/Form";
+import { ILayout, IGroup } from "../lib/Form";
 import "./App.css";
 import { ImaginaryForm } from "../lib/ImaginaryForm";
 import { FieldLabel, FormFields, Input, InputError, Select } from "../lib";
-import { IGroup } from "../dist";
 
 const layout: ILayout = {
   id: "vendor",

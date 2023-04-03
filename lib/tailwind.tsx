@@ -1,4 +1,4 @@
-import { IInputProps, ISelectProps } from "../dist";
+import { IInputProps, ISelectProps } from "./Fields";
 import {
   IButton,
   IFieldErrorProps,

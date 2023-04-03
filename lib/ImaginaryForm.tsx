@@ -1,4 +1,4 @@
-import Form, { ILayout } from "./Form";
+import Form, { ILayout, IGroup } from "./Form";
 import { Breadcrumbs, INavItem } from "./Navigation";
 import useImaginaryForm, {
   IFormEvents,
@@ -6,7 +6,6 @@ import useImaginaryForm, {
 } from "./useImaginaryForm";
 import { TValuesObj } from "./utils";
 import { FormFields } from "./Fields";
-import { IGroup } from "../dist";
 
 const FormBreadCrumbs = () => {
   const { groupNav, goToStep } = useImaginaryForm();

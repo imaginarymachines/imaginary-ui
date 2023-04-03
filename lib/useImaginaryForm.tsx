@@ -1,7 +1,6 @@
 import { createContext, useState, useMemo, useContext, useEffect } from "react";
-import { IGroup } from "../dist";
 import { TFields } from "./Fields";
-import { ILayout } from "./Form";
+import { ILayout, IGroup } from "./Form";
 import { INavItems } from "./Navigation";
 import {
   collectFieldRules,
