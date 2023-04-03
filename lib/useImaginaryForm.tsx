@@ -93,9 +93,19 @@ export const ImaginaryFormProvider = ({
     if (!currentGroup) {
       return [];
     }
-    return layout.fields.filter((field) => {
-      return currentGroup.fields.includes(field.name);
-    });
+    return (
+      layout.fields
+        .filter((field) => {
+          return currentGroup.fields.includes(field.name);
+        })
+        //if data has a value for field, set as defaultValue
+        .map((field) => {
+          return {
+            ...field,
+            defaultValue: data[field.name] ?? field.defaultValue,
+          };
+        })
+    );
   }, [layout, currentStep]);
 
   const onBack = () => {

@@ -24,7 +24,7 @@ export interface IField {
   id: string;
   type: string;
   fieldType?: TFieldTypes;
-  defaultValue?: string;
+  defaultValue?: string | number;
   label: string;
   name: string;
   description?: string;
