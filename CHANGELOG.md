@@ -1,5 +1,15 @@
 # @imaginary-machines/imaginary-ui
 
+## 0.4.0
+
+### Minor Changes
+
+- b20569c: Feature: Change events. Fixed: values of fields when going backwards
+
+### Patch Changes
+
+- e7bdcd4: Fixed imports
+
 ## 0.3.0
 
 ### Minor Changes
