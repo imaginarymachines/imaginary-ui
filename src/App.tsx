@@ -20,7 +20,6 @@ const layout: ILayout = {
       id: "roles",
       label: "Roles",
       order: 2,
-
       fields: ["role"],
     },
   ],
@@ -79,7 +78,7 @@ const formEvents = {
   },
   validationPassed: () => {
     console.log("validation passed");
-  }
+  },
 };
 function App() {
   const onSave = (data: any) => {
@@ -108,7 +107,7 @@ function App() {
         components={components}
         layout={layout}
         onSave={onSave}
-        />
+      />
     </>
   );
 }

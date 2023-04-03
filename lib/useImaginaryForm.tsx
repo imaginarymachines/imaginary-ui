@@ -1,4 +1,4 @@
-import { createContext, useState, useMemo, useContext,useEffect } from "react";
+import { createContext, useState, useMemo, useContext, useEffect } from "react";
 import { IGroup } from "../dist";
 import { TFields } from "./Fields";
 import { ILayout } from "./Form";
@@ -28,8 +28,8 @@ const ImaginaryFormContext = createContext<{
 );
 
 export interface IFormEvents {
-  stepChanged?: (step: number,currentGroup: IGroup) => void;
-  validationFailed?: (errors: {[key:string]: string}) => void;
+  stepChanged?: (step: number, currentGroup: IGroup) => void;
+  validationFailed?: (errors: { [key: string]: string }) => void;
   validationPassed?: () => void;
 }
 
@@ -42,7 +42,7 @@ export const ImaginaryFormProvider = ({
   children: React.ReactNode;
   layout: ILayout;
   onSave: (values: TValuesObj) => void;
-  formEvents?: IFormEvents
+  formEvents?: IFormEvents;
 }) => {
   //steps as id: order
   const steps = useMemo<{ [key: string]: number }>(() => {
@@ -166,7 +166,7 @@ export const ImaginaryFormProvider = ({
         formEvents.validationFailed(errors);
       }
     }
-  },[errors,hasErrors,formEvents?.validationFailed])
+  }, [errors, hasErrors, formEvents?.validationFailed]);
 
   //When step changes, call stepChanged event
   useEffect(() => {
@@ -175,11 +175,10 @@ export const ImaginaryFormProvider = ({
         return group.order === currentStep;
       });
       if (currentGroup) {
-        formEvents.stepChanged(currentStep,currentGroup);
+        formEvents.stepChanged(currentStep, currentGroup);
       }
-
     }
-  },[currentStep,layout.groups,formEvents?.stepChanged])
+  }, [currentStep, layout.groups, formEvents?.stepChanged]);
 
   return (
     <ImaginaryFormContext.Provider
