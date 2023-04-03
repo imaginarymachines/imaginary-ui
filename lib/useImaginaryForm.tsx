@@ -1,4 +1,5 @@
-import { createContext, useState, useMemo, useContext } from "react";
+import { createContext, useState, useMemo, useContext,useEffect } from "react";
+import { IGroup } from "../dist";
 import { TFields } from "./Fields";
 import { ILayout } from "./Form";
 import { INavItems } from "./Navigation";
@@ -26,14 +27,22 @@ const ImaginaryFormContext = createContext<{
   null
 );
 
+export interface IFormEvents {
+  stepChanged?: (step: number,currentGroup: IGroup) => void;
+  validationFailed?: (errors: {[key:string]: string}) => void;
+  validationPassed?: () => void;
+}
+
 export const ImaginaryFormProvider = ({
   children,
   layout,
   onSave,
+  formEvents = undefined,
 }: {
   children: React.ReactNode;
   layout: ILayout;
   onSave: (values: TValuesObj) => void;
+  formEvents?: IFormEvents
 }) => {
   //steps as id: order
   const steps = useMemo<{ [key: string]: number }>(() => {
@@ -139,15 +148,38 @@ export const ImaginaryFormProvider = ({
     if (step > currentStep) {
       return;
     }
-
     if (step > 0 && step <= layout.groups.length) {
       setCurrentStep(step);
     }
   };
 
+  //Do we have any errors?
   const hasErrors = useMemo(() => {
     return Object.keys(errors).length > 0;
   }, [errors]);
+
+  //EVENTS
+  //validationFailed
+  useEffect(() => {
+    if (undefined != formEvents?.validationFailed) {
+      if (hasErrors) {
+        formEvents.validationFailed(errors);
+      }
+    }
+  },[errors,hasErrors,formEvents?.validationFailed])
+
+  //When step changes, call stepChanged event
+  useEffect(() => {
+    if (undefined != formEvents?.stepChanged) {
+      const currentGroup = layout.groups.find((group) => {
+        return group.order === currentStep;
+      });
+      if (currentGroup) {
+        formEvents.stepChanged(currentStep,currentGroup);
+      }
+
+    }
+  },[currentStep,layout.groups,formEvents?.stepChanged])
 
   return (
     <ImaginaryFormContext.Provider

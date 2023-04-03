@@ -2,6 +2,7 @@ import { ILayout } from "../lib/Form";
 import "./App.css";
 import { ImaginaryForm } from "../lib/ImaginaryForm";
 import { FieldLabel, FormFields, Input, InputError, Select } from "../lib";
+import { IGroup } from "../dist";
 
 const layout: ILayout = {
   id: "vendor",
@@ -69,6 +70,17 @@ const layout: ILayout = {
   ],
 };
 
+const formEvents = {
+  stepChanged: (step: number, group: IGroup) => {
+    console.log("step changed", step, group);
+  },
+  validationFailed: (errors: any) => {
+    console.log("validation failed", errors);
+  },
+  validationPassed: () => {
+    console.log("validation passed");
+  }
+};
 function App() {
   const onSave = (data: any) => {
     console.log(data);
@@ -91,7 +103,12 @@ function App() {
 
   return (
     <>
-      <ImaginaryForm components={components} layout={layout} onSave={onSave} />
+      <ImaginaryForm
+        formEvents={formEvents}
+        components={components}
+        layout={layout}
+        onSave={onSave}
+        />
     </>
   );
 }

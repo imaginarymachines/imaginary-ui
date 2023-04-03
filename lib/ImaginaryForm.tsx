@@ -1,8 +1,9 @@
 import Form, { ILayout } from "./Form";
 import { Breadcrumbs, INavItem } from "./Navigation";
-import useImaginaryForm, { ImaginaryFormProvider } from "./useImaginaryForm";
+import useImaginaryForm, { IFormEvents, ImaginaryFormProvider } from "./useImaginaryForm";
 import { TValuesObj } from "./utils";
 import { FormFields } from "./Fields";
+import { IGroup } from "../dist";
 
 const FormBreadCrumbs = () => {
   const { groupNav, goToStep } = useImaginaryForm();
@@ -22,15 +23,17 @@ export function ImaginaryForm({
   onSave,
   withBreadcrumb = false,
   components,
+  formEvents = undefined
 }: {
   layout: ILayout;
   onSave: (values: TValuesObj) => void;
   withBreadcrumb?: boolean;
   components: FormFields;
+  formEvents?: IFormEvents;
 }) {
   return (
     <>
-      <ImaginaryFormProvider layout={layout} onSave={onSave}>
+      <ImaginaryFormProvider layout={layout} onSave={onSave} formEvents={formEvents}>
         {withBreadcrumb ? <FormBreadCrumbs /> : null}
         <Form components={components} />
       </ImaginaryFormProvider>
